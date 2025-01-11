@@ -30,7 +30,7 @@ class Location
     private ?string $etatLocation = null;
 
     #[ORM\ManyToOne(inversedBy: 'locations')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')] 
     private ?Client $client = null;
 
 

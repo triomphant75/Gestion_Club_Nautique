@@ -1,0 +1,246 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil Client - {{ client.nomClient }} {{ client.prenomClient }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Profil de {{ client.nomClient }} {{ client.prenomClient }}</h1>
+
+        <h3>Informations personnelles</h3>
+        <table class="table table-bordered">
+            <tr>
+                <th>Nom</th>
+                <td>{{ client.nomClient }}</td>
+            </tr>
+            <tr>
+                <th>Prénom</th>
+                <td>{{ client.prenomClient }}</td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>{{ client.adresseClient }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ client.emailClient }}</td>
+            </tr>
+            <tr>
+                <th>Niveau</th>
+                <td>{{ client.niveauClient }}</td>
+            </tr>
+            <tr>
+                <th>Téléphone</th>
+                <td>{{ client.TelClient }}</td>
+            </tr>
+            <tr>
+                <th>Date d'inscription</th>
+                <td>{{ client.DateInscriptionClient|date('d-m-Y') }}</td>
+            </tr>
+        </table>
+
+        <!-- Button to add a forfait -->
+        <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addForfaitModal">Ajouter un Forfait</button>
+
+        <h3>Forfaits</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Nombre de séances</th>
+                    <th>Date début</th>
+                    <th>Date d'expiration</th>
+                    <th>Prix</th>
+                    <th>Prix avec Remise</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for forfait in client.forfaits %}
+                    <tr>
+                        <td>{{ forfait.id }}</td>
+                        <td>{{ forfait.typeForfait }}</td>
+                        <td>{{ forfait.nombreSeance }}</td>
+                        <td>{{ forfait.dateDebut|date('d-m-Y') }}</td>
+                        <td>{{ forfait.dateExpiration|date('d-m-Y') }}</td>
+                        <td>{{ forfait.prixForfait }} €</td>
+                        <td>{{ forfait.prixRemiseForfait }} €</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#editForfaitModal" 
+                                    data-id="{{ forfait.id }}"
+                                    data-type="{{ forfait.typeForfait }}"
+                                    data-nombre="{{ forfait.nombreSeance }}"
+                                    data-debut="{{ forfait.dateDebut|date('Y-m-d') }}"
+                                    data-expiration="{{ forfait.dateExpiration|date('Y-m-d') }}"
+                                    data-prix="{{ forfait.prixForfait }}"
+                                    data-remise="{{ forfait.prixRemiseForfait }}">Modifier</button>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="8">Aucun forfait trouvé</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h3>Paiements</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Montant</th>
+                    <th>Mode de paiement</th>
+                    <th>Statut du paiement</th>
+                    <th>Forfait</th>
+                    <th>Location</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paiement in client.paiements %}
+                    <tr>
+                        <td>{{ paiement.id }}</td>
+                        <td>{{ paiement.montant }} €</td>
+                        <td>{{ paiement.modePaiement }}</td>
+                        <td>{{ paiement.statutPaiement }}</td>
+                        <td>
+                            {% if paiement.forfait %}
+                                Forfait #{{ paiement.forfait.id }} - {{ paiement.forfait.typeForfait }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if paiement.location %}
+                                Location #{{ paiement.location.id }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#viewFactureModal" 
+                                    data-id="{{ paiement.id }}" 
+                                    data-num="{{ paiement.facture.numFacture }}" 
+                                    data-montant="{{ paiement.facture.montantTotal }}" 
+                                    data-date="{{ paiement.facture.dateFacture|date('d-m-Y') }}" 
+                                    data-adresse="{{ paiement.facture.adresseEtablissement }}">Voir Facture</button>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7">Aucun paiement trouvé</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Modal pour ajouter un forfait -->
+        <div class="modal fade" id="addForfaitModal" tabindex="-1" aria-labelledby="addForfaitModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addForfaitModalLabel">Ajouter un Forfait</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addForfaitForm" method="post" action="{{ path('app_forfait_create', {id: client.id}) }}">
+                            <div class="mb-3">
+                                <label for="typeForfait" class="form-label">Type</label>
+                                <input type="text" class="form-control" id="typeForfait" name="typeForfait" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nombreSeance" class="form-label">Nombre de séances</label>
+                                <input type="number" class="form-control" id="nombreSeance" name="nombreSeance" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="dateDebut" class="form-label">Date de début</label>
+                                <input type="date" class="form-control" id="dateDebut" name="dateDebut" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="dateExpiration" class="form-label">Date d'expiration</label>
+                                <input type="date" class="form-control" id="dateExpiration" name="dateExpiration" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="prixForfait" class="form-label">Prix</label>
+                                <input type="number" class="form-control" id="prixForfait" name="prixForfait" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="prixRemiseForfait" class="form-label">Prix avec Remise</label>
+                                <input type="number" class="form-control" id="prixRemiseForfait" name="prixRemiseForfait" required>
+                            </div>
+                            <button type="submit" class="btn btn-success">Enregistrer le forfait</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal pour modifier un forfait -->
+        <div class="modal fade" id="editForfaitModal" tabindex="-1" aria-labelledby="editForfaitModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editForfaitModalLabel">Modifier le Forfait</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editForfaitForm" method="post">
+                            <div class="mb-3">
+                                <label for="editTypeForfait" class="form-label">Type</label>
+                                <input type="text" class="form-control" id="editTypeForfait" name="typeForfait" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editNombreSeance" class="form-label">Nombre de séances</label>
+                                <input type="number" class="form-control" id="editNombreSeance" name="nombreSeance" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editDateDebut" class="form-label">Date de début</label>
+                                <input type="date" class="form-control" id="editDateDebut" name="dateDebut" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editDateExpiration" class="form-label">Date d'expiration</label>
+                                <input type="date" class="form-control" id="editDateExpiration" name="dateExpiration" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editPrixForfait" class="form-label">Prix</label>
+                                <input type="number" class="form-control" id="editPrixForfait" name="prixForfait" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editPrixRemiseForfait" class="form-label">Prix avec Remise</label>
+                                <input type="number" class="form-control" id="editPrixRemiseForfait" name="prixRemiseForfait" required>
+                            </div>
+                            <button type="submit" class="btn btn-warning">Modifier</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal pour voir la facture -->
+        <div class="modal fade" id="viewFactureModal" tabindex="-1" aria-labelledby="viewFactureModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewFactureModalLabel">Détails de la Facture</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Numéro de Facture :</strong> <span id="factureNum"></span></p>
+                        <p><strong>Montant Total :</strong> <span id="factureMontant"></span> €</p>
+                        <p><strong>Date :</strong> <span id="factureDate"></span></p>
+                        <p><strong>Adresse :</strong> <span id="factureAdresse"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+{% endblock %}

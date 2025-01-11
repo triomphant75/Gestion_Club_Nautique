@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Facture #{{ facture.id }}{% endblock %}
+
+{% block body %}
+    <h1>Facture #{{ facture.id }}</h1>
+    <table class="table">
+        <tr>
+            <th>Numéro de facture</th>
+            <td>{{ facture.numFacture }}</td>
+        </tr>
+        <tr>
+            <th>Montant total</th>
+            <td>{{ facture.montantTotal }} €</td>
+        </tr>
+        <tr>
+            <th>Adresse d'établissement</th>
+            <td>{{ facture.adresseEtablissement }}</td>
+        </tr>
+        <tr>
+            <th>Date de la facture</th>
+            <td>{{ facture.dateFacture|date('d-m-Y') }}</td>
+        </tr>
+    </table>
+    
+    <a href="{{ path('app_client_profile', {id: facture.paiement.client.id}) }}" class="btn btn-secondary">Retour au profil client</a>
+{% endblock %}

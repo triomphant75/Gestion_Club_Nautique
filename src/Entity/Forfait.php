@@ -34,6 +34,21 @@ class Forfait
     #[ORM\Column]
     private ?float $prixRemiseForfait = null;
 
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private $isConfirmed = false;
+
+    public function isConfirmed(): bool
+    {
+        return $this->isConfirmed;
+    }
+
+    public function setIsConfirmed(bool $isConfirmed): self
+    {
+        $this->isConfirmed = $isConfirmed;
+
+        return $this;
+    }
+
     /**
      * @var Collection<int, UtilisationForfait>
      */
@@ -41,7 +56,7 @@ class Forfait
     private Collection $UtilisationForfaits;
 
     #[ORM\ManyToOne(inversedBy: 'forfaits')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')] 
     private ?Client $client = null;
 
    

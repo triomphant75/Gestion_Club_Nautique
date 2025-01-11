@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un Paiement pour {{ client.nomClient }} {{ client.prenomClient }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Créer un Paiement pour {{ client.nomClient }} {{ client.prenomClient }}</h1>
+
+        <form method="POST" action="{{ path('app_paiement_create', {id: client.id, forfait_id: forfait.id}) }}">
+            <div class="mb-3">
+                <label for="montant" class="form-label">Montant</label>
+                <input type="number" class="form-control" id="montant" name="montant" required>
+            </div>
+            <div class="mb-3">
+                <label for="modePaiement" class="form-label">Mode de Paiement</label>
+                <input type="text" class="form-control" id="modePaiement" name="modePaiement" required>
+            </div>
+            <div class="mb-3">
+                <label for="statutPaiement" class="form-label">Statut</label>
+                <select class="form-control" id="statutPaiement" name="statutPaiement">
+                    <option value="Effectué">Effectué</option>
+                    <option value="En attente">En attente</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-success">Enregistrer le Paiement</button>
+        </form>
+    </div>
+{% endblock %}

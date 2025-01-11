@@ -29,7 +29,7 @@ class Participation
     private Collection $utilisationForfaits;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete:'CASCADE')]
     private ?Client $client = null;
 
     #[ORM\ManyToOne(inversedBy: 'participations')]

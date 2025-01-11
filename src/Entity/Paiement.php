@@ -28,7 +28,7 @@ class Paiement
 
  
     #[ORM\ManyToOne(inversedBy: 'paiements')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete:'CASCADE')]
     private ?Client $client = null;
 
     #[ORM\OneToOne(inversedBy: 'paiement', cascade: ['persist', 'remove'])]
