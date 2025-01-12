@@ -54,7 +54,7 @@ class Cours
     private ?Moniteur $moniteur = null;
 
     #[ORM\ManyToOne(inversedBy: 'cours')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Proprietaire $proprietaire = null;
 
     public function __construct()

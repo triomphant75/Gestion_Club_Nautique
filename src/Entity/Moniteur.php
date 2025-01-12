@@ -29,7 +29,7 @@ class Moniteur extends UserClub
         
     public function __construct()
     {
-    $this->roles[]='ROLE_GESTIONNAIRE';
+    $this->roles[]='ROLE_MONITEUR';
     $this->cours = new ArrayCollection();
     }
 

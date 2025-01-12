@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Participants du Cours{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>Participants du Cours : {{ cours.id }}</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for participation in participants %}
+                <tr>
+                    <td>{{ participation.client.nomClient }}</td>
+                    <td>{{ participation.client.prenomClient }}</td>
+                    <td>{{ participation.client.emailClient }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

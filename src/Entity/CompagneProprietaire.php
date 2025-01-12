@@ -12,6 +12,6 @@ class CompagneProprietaire extends UserClub
     
      public function __construct()
      {
-      $this->roles[]='ROLE_GESTIONNAIRE';
+      $this->roles[]='ROLE_PROPRIETAIRE';
      }
 }

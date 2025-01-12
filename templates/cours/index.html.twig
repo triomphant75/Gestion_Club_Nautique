@@ -1,8 +1,69 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}page cours!{% endblock %}
+{% block title %}Liste des Cours{% endblock %}
 
 {% block body %}
-    je suis la page cours j'ai besoin du mon code html et css
+    <h1>Liste des Cours</h1>
 
+    <!-- Bouton pour ouvrir le modal -->
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createCoursModal">
+        Ajouter un cours
+    </button>
+
+    <!-- Modal pour le formulaire d'ajout -->
+    <div class="modal fade" id="createCoursModal" tabindex="-1" aria-labelledby="createCoursModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createCoursModalLabel">Créer un nouveau cours</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    <button type="submit" class="btn btn-success">Enregistrer</button>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau des cours -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Heure de début</th>
+                <th>Heure de fin</th>
+                <th>État</th>
+                <th>Nombre de places</th>
+                <th>Moniteur</th>
+                <th>Matériaux</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cours in cours %}
+                <tr>
+                    <td>{{ cours.id }}</td>
+                    <td>{{ cours.dateCours|date('d/m/Y') }}</td>
+                    <td>{{ cours.heureDebutCours|date('H:i') }}</td>
+                    <td>{{ cours.heureFinCours|date('H:i') }}</td>
+                    <td>{{ cours.etatCours }}</td>
+                    <td>{{ cours.nombreDePlace }}</td>
+                    <td>{{ cours.moniteur.prenomUser }} {{ cours.moniteur.username }}</td>
+                    <td>
+                        {% for materiel in cours.materiels %}
+                            {{ materiel.typeMateriel }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="{{ path('cours_show', { id: cours.id }) }}" class="btn btn-info btn-sm">Voir</a>
+                        <a href="{{ path('cours_participants', { id: cours.id }) }}" class="btn btn-secondary btn-sm">Participants</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
