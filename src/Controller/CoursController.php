@@ -11,6 +11,8 @@ use App\Entity\Cours;
 use App\Form\CoursType;
 use App\Entity\Moniteur;
 use App\Entity\UserClub;
+use App\Form\AddClientToCoursType;
+use App\Entity\Participation;
 
 class CoursController extends AbstractController
 {
@@ -38,6 +40,7 @@ class CoursController extends AbstractController
         ]);
         $form->handleRequest($request);
 
+
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($newCours);
             $em->flush();
@@ -45,9 +48,21 @@ class CoursController extends AbstractController
             return $this->redirectToRoute('cours_index');
         }
 
+            // Préparer le formulaire d'ajout de client pour chaque cours
+            $addClientForms = [];
+            foreach ($cours as $coursItem) {
+                // Créez un formulaire spécifique pour chaque cours
+                $addClientForms[$coursItem->getId()] = $this->createForm(AddClientToCoursType::class, null, [
+                    'cours' => $coursItem
+                ])->createView();
+            }
+
+
         return $this->render('cours/index.html.twig', [
             'cours' => $cours,
             'form' => $form->createView(),
+            'addClientForms' => $addClientForms,
+
         ]);
     }
 
@@ -62,14 +77,78 @@ class CoursController extends AbstractController
     }
 
     #[Route('/cours/{id}/participants', name: 'cours_participants')]
-    public function participants(Cours $cours): Response
+    public function participants(Cours $cours, EntityManagerInterface $em): Response
     {
         // Récupérer les participations associées au cours
-        $participants = $cours->getParticipations();
+        $participants = $em->getRepository(Participation::class)->findBy(['cours' => $cours]);
 
         return $this->render('cours/participants.html.twig', [
             'cours' => $cours,
             'participants' => $participants,
         ]);
     }
+
+
+    #[Route('/cours/{id}/add-clients', name: 'cours_add_clients')]
+    public function addClientsToCours(
+        Cours $cours, // Le cours est récupéré automatiquement grâce à l'ID dans l'URL
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        // Créez le formulaire
+        $form = $this->createForm(AddClientToCoursType::class, null, [
+            'cours' => $cours // Passez le cours au formulaire
+        ]);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Récupérer les clients sélectionnés
+            $clients = $form->get('client')->getData();
+            $dateInscription = $form->get('dateInscriptionCours')->getData();
+            $statut = $form->get('statutParticipant')->getData();
+
+            
+    
+            // Vérification pour chaque client ajouté
+            foreach ($clients as $client) {
+                // Vérifier si le client est déjà inscrit à ce cours
+            $existingParticipation = $em->getRepository(Participation::class)->findOneBy([
+                'cours' => $cours,
+                'client' => $client
+            ]);
+
+            // Si le client n'est pas encore inscrit, on crée une nouvelle participation
+            if (!$existingParticipation) {
+                $participation = new Participation();
+                $participation->setCours($cours);
+                $participation->setClient($client);
+                $participation->setDateInscriptionCours($dateInscription);  // Date d'inscription actuelle
+                $participation->setStatutParticipant( $statut);  // Statut par défaut "Inscrit"
+
+                // Persister la participation
+                $em->persist($participation);
+            } else {
+                // Si le client est déjà inscrit, on peut choisir de l'ignorer ou mettre à jour les informations
+                // Par exemple, on peut juste vérifier le statut ici si besoin.
+            }
+        }
+    
+            // Sauvegarder les modifications
+            $em->flush();
+    
+            // Message de succès et redirection
+            $this->addFlash('success', 'Clients ajoutés au cours avec succès.');
+            return $this->redirectToRoute('cours_participants', ['id' => $cours->getId()]);
+        }
+    
+        return $this->render('cours/add_clients.html.twig', [
+            'cours' => $cours,
+            'form' => $form->createView(),
+        ]);
+    }
+    
+    
+
+
+
 }

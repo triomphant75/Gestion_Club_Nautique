@@ -5,12 +5,12 @@
 {% block body %}
     <h1>Liste des Cours</h1>
 
-    <!-- Bouton pour ouvrir le modal -->
+    <!-- Bouton pour ouvrir le modal pour ajouter un nouveau cours -->
     <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createCoursModal">
         Ajouter un cours
     </button>
 
-    <!-- Modal pour le formulaire d'ajout -->
+    <!-- Modal pour le formulaire d'ajout de cours -->
     <div class="modal fade" id="createCoursModal" tabindex="-1" aria-labelledby="createCoursModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -59,8 +59,44 @@
                         {% endfor %}
                     </td>
                     <td>
+                        <!-- Bouton pour visualiser les détails du cours -->
                         <a href="{{ path('cours_show', { id: cours.id }) }}" class="btn btn-info btn-sm">Voir</a>
+
+                        <!-- Bouton pour gérer les participants -->
                         <a href="{{ path('cours_participants', { id: cours.id }) }}" class="btn btn-secondary btn-sm">Participants</a>
+
+                        <!-- Bouton pour ouvrir le modal d'ajout de clients -->
+                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addClientModal-{{ cours.id }}">
+                            Ajouter Client
+                        </button>
+
+                        <!-- Modal pour ajouter un client au cours -->
+                        <div class="modal fade" id="addClientModal-{{ cours.id }}" tabindex="-1" aria-labelledby="addClientModalLabel-{{ cours.id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="addClientModalLabel-{{ cours.id }}">Ajouter un client au cours {{ cours.id }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {{ form_start(addClientForms[cours.id], {'action': path('cours_add_clients', {'id': cours.id})}) }}
+                                        
+                                        <!-- Sélectionner un client -->
+                                        {{ form_row(addClientForms[cours.id].client) }}
+                                        
+                                        <!-- Date d'inscription -->
+                                        {{ form_row(addClientForms[cours.id].dateInscriptionCours) }}
+                                        
+                                        <!-- Statut -->
+                                        {{ form_row(addClientForms[cours.id].statutParticipant) }}
+                                        
+                                        <button type="submit" class="btn btn-success">Ajouter</button>
+                                        {{ form_end(addClientForms[cours.id]) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </td>
                 </tr>
             {% endfor %}

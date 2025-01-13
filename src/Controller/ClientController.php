@@ -49,7 +49,7 @@ class ClientController extends AbstractController
         return $this->redirectToRoute('app_client_index');
     }
 
-    #[Route('/client/{id}/edit', name: 'app_client_edit', methods: ['POST'])]
+    #[Route('/client/{id}/edit', name: 'app_client_edit', methods: ['GET','POST'])]
     public function edit(Request $request, Client $client): Response
     {
         $client->setNomClient($request->request->get('nomClient'));
@@ -75,7 +75,7 @@ public function delete(Client $client): Response
 }
 
 
-    #[Route('/client/{id}/profile', name: 'client_profile', methods: ['GET'])]
+    #[Route('/client/{id}/profile', name: 'client_profile', methods: ['GET','POST'])]
     public function profile(Client $client): Response
     {
         return $this->render('client/profile.html.twig', [
@@ -86,7 +86,7 @@ public function delete(Client $client): Response
     }
 
     #[Route('/paiement/{id}/facture', name: 'app_facture_show')]
-    public function showFacture(Paiement $paiement): Response
+    public function consulterFacture(Paiement $paiement): Response
     {
         // On récupère la facture associée au paiement
         $facture = $paiement->getFacture();
