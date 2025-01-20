@@ -66,7 +66,6 @@
                     <th>Date d'expiration</th>
                     <th>Prix</th>
                     <th>Prix avec Remise</th>
-                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -79,18 +78,7 @@
                         <td>{{ forfait.dateExpiration|date('d-m-Y') }}</td>
                         <td>{{ forfait.prixForfait }} €</td>
                         <td>{{ forfait.prixRemiseForfait }} €</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm" 
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#editForfaitModal" 
-                                    data-id="{{ forfait.id }}"
-                                    data-type="{{ forfait.typeForfait.value }}"
-                                    data-nombre="{{ forfait.nombreSeance }}"
-                                    data-debut="{{ forfait.dateDebut|date('Y-m-d') }}"
-                                    data-expiration="{{ forfait.dateExpiration|date('Y-m-d') }}"
-                                    data-prix="{{ forfait.prixForfait }}"
-                                    data-remise="{{ forfait.prixRemiseForfait }}">Modifier</button>
-                        </td>
+                        
                     </tr>
                 {% else %}
                     <tr>
@@ -212,46 +200,7 @@
         </div>
 
 
-        <!-- Modal pour modifier un forfait -->
-        <div class="modal fade" id="editForfaitModal" tabindex="-1" aria-labelledby="editForfaitModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editForfaitModalLabel">Modifier le Forfait</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="editForfaitForm" method="post">
-                            <div class="mb-3">
-                                <label for="editTypeForfait" class="form-label">Type</label>
-                                <input type="text" class="form-control" id="editTypeForfait" name="typeForfait" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editNombreSeance" class="form-label">Nombre de séances</label>
-                                <input type="number" class="form-control" id="editNombreSeance" name="nombreSeance" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editDateDebut" class="form-label">Date de début</label>
-                                <input type="date" class="form-control" id="editDateDebut" name="dateDebut" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editDateExpiration" class="form-label">Date d'expiration</label>
-                                <input type="date" class="form-control" id="editDateExpiration" name="dateExpiration" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editPrixForfait" class="form-label">Prix</label>
-                                <input type="number" class="form-control" id="editPrixForfait" name="prixForfait" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editPrixRemiseForfait" class="form-label">Prix avec Remise</label>
-                                <input type="number" class="form-control" id="editPrixRemiseForfait" name="prixRemiseForfait" required>
-                            </div>
-                            <button type="submit" class="btn btn-warning">Modifier</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
 
         <!-- Modal pour voir la facture -->
         <div class="modal fade" id="viewFactureModal" tabindex="-1" aria-labelledby="viewFactureModalLabel" aria-hidden="true">

@@ -61,7 +61,7 @@ class CoursController extends AbstractController
 
         // Récupérer tous les UserClub avec statut "actif"
         $userClubsActifs = $em->getRepository(UserClub::class)->findBy([
-            'statutUser' => 'disponible',
+            'statutUser' => 'Disponible',
         ]);
 
         // Filtrer pour ne garder que les Moniteurs
@@ -78,6 +78,9 @@ class CoursController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($newCours);
             $em->flush();
+
+            $this->addFlash('succes',"Cours ajouté avec succès.");
+
 
             return $this->redirectToRoute('cours_index');
         }

@@ -10,6 +10,12 @@
         Ajouter un cours
     </button>
 
+     {% for message in app.flashes('success') %}
+        <div class="alert alert-success" id="flash-message">
+            {{ message }}
+        </div>
+        {% endfor %}
+
     <!-- Modal pour le formulaire d'ajout de cours -->
     <div class="modal fade" id="createCoursModal" tabindex="-1" aria-labelledby="createCoursModalLabel" aria-hidden="true">
         <div class="modal-dialog">
