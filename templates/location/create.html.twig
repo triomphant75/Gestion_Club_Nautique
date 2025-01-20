@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter une Location{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Ajouter une Location</h1>
+
+        <div class="card">
+            <div class="card-body">
+                {{ form_start(formLocation, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                
+                <div class="mb-3">
+                    {{ form_row(formLocation.nom) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(formLocation.dateDebut) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(formLocation.dateFin) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(formLocation.montant) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(formLocation.client) }}
+                </div>
+                <!-- Ajouter d'autres champs ici, si nécessaire -->
+
+                <button type="submit" class="btn btn-success">Enregistrer</button>
+                
+                {{ form_end(formLocation) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

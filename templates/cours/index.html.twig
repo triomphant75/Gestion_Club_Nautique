@@ -19,9 +19,36 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    {{ form_start(form) }}
-                    {{ form_widget(form) }}
-                    <button type="submit" class="btn btn-success">Enregistrer</button>
+                    {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                        <div class="form-group">
+                            {{ form_label(form.dateCours, 'Date du Cours', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.dateCours, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.heureDebutCours, 'Heure de Début', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.heureDebutCours, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.heureFinCours, 'Heure de Fin', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.heureFinCours, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.etatCours, 'État du Cours', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.etatCours, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.nombreDePlace, 'Nombre de Places', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.nombreDePlace, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.moniteur, 'Moniteur', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.moniteur, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.materiels, 'Matériaux', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.materiels, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <button type="submit" class="btn btn-success">Enregistrer</button>
                     {{ form_end(form) }}
                 </div>
             </div>
@@ -65,38 +92,10 @@
                         <!-- Bouton pour gérer les participants -->
                         <a href="{{ path('cours_participants', { id: cours.id }) }}" class="btn btn-secondary btn-sm">Participants</a>
 
-                        <!-- Bouton pour ouvrir le modal d'ajout de clients -->
-                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addClientModal-{{ cours.id }}">
+                        <!-- Bouton pour rediriger vers la page d'ajout de client -->
+                        <a href="{{ path('cours_add_clients', {'id': cours.id}) }}" class="btn btn-success btn-sm">
                             Ajouter Client
-                        </button>
-
-                        <!-- Modal pour ajouter un client au cours -->
-                        <div class="modal fade" id="addClientModal-{{ cours.id }}" tabindex="-1" aria-labelledby="addClientModalLabel-{{ cours.id }}" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="addClientModalLabel-{{ cours.id }}">Ajouter un client au cours {{ cours.id }}</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        {{ form_start(addClientForms[cours.id], {'action': path('cours_add_clients', {'id': cours.id})}) }}
-                                        
-                                        <!-- Sélectionner un client -->
-                                        {{ form_row(addClientForms[cours.id].client) }}
-                                        
-                                        <!-- Date d'inscription -->
-                                        {{ form_row(addClientForms[cours.id].dateInscriptionCours) }}
-                                        
-                                        <!-- Statut -->
-                                        {{ form_row(addClientForms[cours.id].statutParticipant) }}
-                                        
-                                        <button type="submit" class="btn btn-success">Ajouter</button>
-                                        {{ form_end(addClientForms[cours.id]) }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
+                        </a>
                     </td>
                 </tr>
             {% endfor %}

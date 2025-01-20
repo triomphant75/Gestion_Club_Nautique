@@ -1,0 +1,35 @@
+{# templates/camping/list.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Campings{% endblock %}
+
+{% block body %}
+    <h1>Liste des Campings</h1>
+
+    <a href="{{ path('camping_new') }}" class="btn btn-primary">Ajouter un Camping</a>
+
+   
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Adresse</th>
+                <th>Contact</th>
+                <th>Remise</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for camping in campings %}
+                <tr>
+                    <td>{{ camping.id }}</td>
+                    <td>{{ camping.nomCamping }}</td>
+                    <td>{{ camping.adresseCamping }}</td>
+                    <td>{{ camping.contactCamping }}</td>
+                    <td>{{ camping.remiseCamping }}%</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

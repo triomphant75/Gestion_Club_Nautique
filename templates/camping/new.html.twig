@@ -1,0 +1,15 @@
+{# templates/camping/new.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un Camping{% endblock %}
+
+{% block body %}
+    <h1>Ajouter un Camping</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-success">Enregistrer</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('camping_list') }}" class="btn btn-secondary">Retour à la liste</a>
+{% endblock %}

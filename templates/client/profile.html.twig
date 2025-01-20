@@ -3,6 +3,10 @@
 {% block title %}Profil Client - {{ client.nomClient }} {{ client.prenomClient }}{% endblock %}
 
 {% block body %}
+
+    <a href="{{ path('app_client_index') }}" class="btn btn-secondary">Retour à la liste des clients</a>
+
+    <br></br>
     <div class="container mt-4">
         <h1>Profil de {{ client.nomClient }} {{ client.prenomClient }}</h1>
 
@@ -26,17 +30,27 @@
             </tr>
             <tr>
                 <th>Niveau</th>
-                <td>{{ client.niveauClient }}</td>
+                <td>{{ client.niveauClient.value }}</td>
             </tr>
             <tr>
                 <th>Téléphone</th>
                 <td>{{ client.TelClient }}</td>
             </tr>
             <tr>
+                <th>Camping</th>
+                <td>{{ client.camping ? client.camping.nomCamping : 'Aucun camping' }}</td>
+            </tr>
+            <tr>
                 <th>Date d'inscription</th>
                 <td>{{ client.DateInscriptionClient|date('d-m-Y') }}</td>
             </tr>
         </table>
+
+        {% for message in app.flashes('success') %}
+        <div class="alert alert-success" id="flash-message">
+            {{ message }}
+        </div>
+        {% endfor %}
 
         <!-- Button to add a forfait -->
         <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addForfaitModal">Ajouter un Forfait</button>
@@ -59,7 +73,7 @@
                 {% for forfait in client.forfaits %}
                     <tr>
                         <td>{{ forfait.id }}</td>
-                        <td>{{ forfait.typeForfait }}</td>
+                        <td>{{ forfait.typeForfait.value }}</td>
                         <td>{{ forfait.nombreSeance }}</td>
                         <td>{{ forfait.dateDebut|date('d-m-Y') }}</td>
                         <td>{{ forfait.dateExpiration|date('d-m-Y') }}</td>
@@ -70,7 +84,7 @@
                                     data-bs-toggle="modal" 
                                     data-bs-target="#editForfaitModal" 
                                     data-id="{{ forfait.id }}"
-                                    data-type="{{ forfait.typeForfait }}"
+                                    data-type="{{ forfait.typeForfait.value }}"
                                     data-nombre="{{ forfait.nombreSeance }}"
                                     data-debut="{{ forfait.dateDebut|date('Y-m-d') }}"
                                     data-expiration="{{ forfait.dateExpiration|date('Y-m-d') }}"
@@ -108,7 +122,7 @@
                         <td>{{ paiement.statutPaiement }}</td>
                         <td>
                             {% if paiement.forfait %}
-                                Forfait #{{ paiement.forfait.id }} - {{ paiement.forfait.typeForfait }}
+                                Forfait #{{ paiement.forfait.id }} - {{ paiement.forfait.typeForfait.value }}
                             {% else %}
                                 N/A
                             {% endif %}
@@ -124,11 +138,18 @@
                             <button class="btn btn-primary btn-sm" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#viewFactureModal" 
-                                    data-id="{{ paiement.id }}" 
+                                    data-id="{{ paiement.id }}"  
                                     data-num="{{ paiement.facture.numFacture }}" 
                                     data-montant="{{ paiement.facture.montantTotal }}" 
                                     data-date="{{ paiement.facture.dateFacture|date('d-m-Y') }}" 
-                                    data-adresse="{{ paiement.facture.adresseEtablissement }}">Voir Facture</button>
+                                    data-adresse="{{ paiement.facture.adresseEtablissement }}"
+                                    data-paiementmode="{{ paiement.modePaiement }}" 
+                                    data-paiementstatut="{{ paiement.statutPaiement }}" 
+                                    data-clientnom="{{ paiement.client.nomClient }}" 
+                                    data-clientprenom="{{ paiement.client.prenomClient }}">
+                                    
+                                    Voir Facture
+                            </button>
                         </td>
                     </tr>
                 {% else %}
@@ -150,8 +171,13 @@
                     <div class="modal-body">
                         <form id="addForfaitForm" method="post" action="{{ path('app_forfait_create', {id: client.id}) }}">
                             <div class="mb-3">
-                                <label for="typeForfait" class="form-label">Type</label>
-                                <input type="text" class="form-control" id="typeForfait" name="typeForfait" required>
+                                <label for="typeForfait" class="form-label">Type de Forfait</label>
+                                <select class="form-control" id="typeForfait" name="typeForfait" required>
+                                    <option value="" disabled selected>Choisissez un type de forfait</option>
+                                    <option value="Forfait1">Forfait1</option>
+                                    <option value="Forfait2">Forfait2</option>
+                                    <option value="Forfait3">Forfait3</option>
+                                </select>
                             </div>
                             <div class="mb-3">
                                 <label for="nombreSeance" class="form-label">Nombre de séances</label>
@@ -173,6 +199,11 @@
                                 <label for="prixRemiseForfait" class="form-label">Prix avec Remise</label>
                                 <input type="number" class="form-control" id="prixRemiseForfait" name="prixRemiseForfait" required>
                             </div>
+
+                            <!-- Champs cachés pour les remises -->
+                            <input type="hidden" id="clientCamping" value="{{ client.camping ? 1 : 0 }}">
+                            <input type="hidden" id="remiseCamping" value="{{ client.camping ? client.camping.remiseCamping : 0 }}">
+
                             <button type="submit" class="btn btn-success">Enregistrer le forfait</button>
                         </form>
                     </div>
@@ -231,15 +262,24 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <!-- Informations de la facture -->
                         <p><strong>Numéro de Facture :</strong> <span id="factureNum"></span></p>
                         <p><strong>Montant Total :</strong> <span id="factureMontant"></span> €</p>
                         <p><strong>Date :</strong> <span id="factureDate"></span></p>
                         <p><strong>Adresse :</strong> <span id="factureAdresse"></span></p>
+
+                        <!-- Informations de paiement -->
+                        <p><strong>Mode de Paiement :</strong> <span id="paiementMode"></span></p>
+                        <p><strong>Statut de Paiement :</strong> <span id="paiementStatut"></span></p>
+
+                        <!-- Informations du client -->
+                        <p><strong>Nom du Client :</strong> <span id="clientNom"></span></p>
+                        <p><strong>Prénom du Client :</strong> <span id="clientPrenom"></span></p>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+
 
     
 

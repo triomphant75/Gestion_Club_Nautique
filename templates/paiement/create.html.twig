@@ -6,10 +6,28 @@
     <div class="container mt-4">
         <h1>Créer un Paiement pour {{ client.nomClient }} {{ client.prenomClient }}</h1>
 
+        <h3>Informations du Client</h3>
+        <p><strong>Nom :</strong> {{ client.nomClient }} {{ client.prenomClient }}</p>
+        <p><strong>Email :</strong> {{ client.emailClient }}</p>
+        <p><strong>Numéro de téléphone :</strong> {{ client.telClient }}</p>
+
+        <h3>Forfait Choisi</h3>
+        <p><strong>Type de Forfait :</strong> {{ forfait.typeForfait.value }}</p>
+        <p><strong>Prix du Forfait :</strong> {{ forfait.prixForfait }} €</p>
+
+        {% if client.camping %}
+            <p><strong>Camping :</strong> {{ client.camping.nomCamping }}</p>
+            <p><strong>Remise Camping :</strong> {{ client.camping.remiseCamping }}%</p>
+        {% else %}
+            <p><strong>Pas de camping associé</strong></p>
+        {% endif %}
+
+        <h3>Montant à Payer : {{ montant }} €</h3>
+
         <form method="POST" action="{{ path('app_paiement_create', {id: client.id, forfait_id: forfait.id}) }}">
             <div class="mb-3">
                 <label for="montant" class="form-label">Montant</label>
-                <input type="number" class="form-control" id="montant" name="montant" required>
+                <input type="number" class="form-control" id="montant" name="montant" value="{{ montant }}" required readonly>
             </div>
             <div class="mb-3">
                 <label for="modePaiement" class="form-label">Mode de Paiement</label>

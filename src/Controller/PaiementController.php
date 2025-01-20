@@ -17,6 +17,7 @@ use App\Entity\Facture;
 class PaiementController extends AbstractController
 
 {
+
     #[Route('/client/{id}/paiement/create', name: 'app_paiement_create', methods: ['GET', 'POST'])]
 public function createPaiement(int $id, Request $request, ClientRepository $clientRepository, EntityManagerInterface $entityManager): Response
 {
@@ -36,6 +37,15 @@ public function createPaiement(int $id, Request $request, ClientRepository $clie
     $forfait = $entityManager->getRepository(Forfait::class)->find($forfaitId);
     if (!$forfait || $forfait->getClient()->getId() !== $client->getId()) {
         throw $this->createNotFoundException('Forfait introuvable ou non associé au client.');
+    }
+
+
+    // Calculer le montant du forfait (prix avec ou sans remise)
+    $montantForfait = $forfait->getPrixForfait();
+    if ($client->getCamping() && $client->getCamping()->getRemiseCamping()) {
+        // Appliquer la remise si le client appartient à un camping
+        $remise = $client->getCamping()->getRemiseCamping();
+        $montantForfait = $montantForfait - ($montantForfait * ($remise/100));
     }
 
     // Créer le paiement
@@ -59,7 +69,7 @@ public function createPaiement(int $id, Request $request, ClientRepository $clie
         $facture = new Facture();
         $facture->setNumFacture(uniqid()); // Générer un numéro de facture unique
         $facture->setMontantTotal($paiement->getMontant());
-        $facture->setAdresseEtablissement('Adresse de l\'établissement'); // Remplacez par l'adresse réelle
+        $facture->setAdresseEtablissement('IMC'); // Remplacez par l'adresse réelle
         $facture->setDateFacture(new \DateTimeImmutable());
         $facture->setPaiement($paiement);
 
@@ -78,7 +88,9 @@ public function createPaiement(int $id, Request $request, ClientRepository $clie
     return $this->render('paiement/create.html.twig', [
         'client' => $client,
         'forfait' => $forfait, // Passer le forfait temporaire
-        'montant' => $forfait->getPrixForfait(), // Passer le montant du forfait
+        //'montant' => $forfait->getPrixForfait(), // Passer le montant du forfait
+        'montant' =>  $montantForfait, // Passer le montant du forfait
+
     ]);
 }
 

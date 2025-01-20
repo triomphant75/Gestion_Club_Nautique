@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ClientRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,8 +29,8 @@ class Client
     #[ORM\Column(length: 255)]
     private ?string $emailClient = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $niveauClient = null;
+    #[ORM\Column(type: 'typeNiveauClient')]
+    private TypeNiveauClient $niveauClient;
 
     #[ORM\Column(length: 255)]
     private ?string $TelClient = null;
@@ -128,12 +129,12 @@ class Client
         return $this;
     }
 
-    public function getNiveauClient(): ?string
+    public function getNiveauClient(): TypeNiveauClient
     {
         return $this->niveauClient;
     }
 
-    public function setNiveauClient(string $niveauClient): static
+    public function setNiveauClient(TypeNiveauClient $niveauClient): self
     {
         $this->niveauClient = $niveauClient;
 

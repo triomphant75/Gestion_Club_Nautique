@@ -4,6 +4,9 @@
 
 {% block body %}
     <h1>Gestion des Clients</h1>
+
+    
+
     <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addClientModal">
         Ajouter un client
     </button>
@@ -17,6 +20,11 @@
             </div>
         </div>
     </div>
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success" id="flash-message">
+            {{ message }}
+        </div>
+    {% endfor %}
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -40,10 +48,10 @@
                     <td>{{ client.prenomClient }}</td>
                     <td>{{ client.adresseClient }}</td>
                     <td>{{ client.emailClient }}</td>
-                    <td>{{ client.niveauClient }}</td>
+                    <td>{{ client.niveauClient.value }}</td>
                     <td>{{ client.TelClient }}</td>
                     <td>{{ client.DateInscriptionClient|date('d-m-Y') }}</td>
-                    <td>{{ client.camping ? client.camping.nomCamping : 'N/A' }}</td>
+                    <td>{{ client.camping ? client.camping.nomCamping : 'Aucun camping' }}</td>
                     <td>
                         <a href="{{ path('client_profile', {id: client.id}) }}" class="btn btn-info btn-sm mr-2">
                             <i class="fas fa-eye"></i>
@@ -54,8 +62,9 @@
                                 data-prenom="{{ client.prenomClient }}"
                                 data-adresse="{{ client.adresseClient }}"
                                 data-email="{{ client.emailClient }}"
-                                data-niveau="{{ client.niveauClient }}"
+                                data-niveau="{{ client.niveauClient.value }}"
                                 data-tel="{{ client.TelClient }}"
+                                data-camping="{{ client.camping ? client.camping.id : '' }}"
                                 data-date="{{ client.DateInscriptionClient|date('Y-m-d') }}">
                             <i class="fas fa-edit"></i>
                         </button>
@@ -98,11 +107,26 @@
                         </div>
                         <div class="form-group">
                             <label for="addNiveauClient">Niveau</label>
-                            <input type="text" class="form-control" id="addNiveauClient" name="niveauClient" required>
+                            <select class="form-control" id="addNiveauClient" name="niveauClient" required>
+                                <option value="" disabled selected>Choisissez un niveau</option>
+                                <option value="Débutant">Débutant</option>
+                                <option value="Intermédiaire">Intermédiaire</option>
+                                <option value="Expert">Expert</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="addTelClient">Téléphone</label>
                             <input type="text" class="form-control" id="addTelClient" name="TelClient" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addCamping">Camping</label>
+                            <select class="form-control" id="addCamping" name="campingId">
+                                <!-- Option pour "aucun camping" -->
+                                <option value="" selected>Aucun camping</option>
+                                {% for camping in campings %}
+                                    <option value="{{ camping.id }}">{{ camping.nomCamping }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="addDateInscriptionClient">Date Inscription</label>
@@ -126,7 +150,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" id="editClientForm">
+                    <form id="editClientForm" method="POST" action="">
                         <div class="form-group">
                             <label for="editNomClient">Nom</label>
                             <input type="text" class="form-control" id="editNomClient" name="nomClient" required>
@@ -145,11 +169,25 @@
                         </div>
                         <div class="form-group">
                             <label for="editNiveauClient">Niveau</label>
-                            <input type="text" class="form-control" id="editNiveauClient" name="niveauClient" required>
+                            <select class="form-control" id="editNiveauClient" name="niveauClient" required>
+                                <option value="" disabled selected>Choisissez un niveau</option>
+                                <option value="Débutant">Débutant</option>
+                                <option value="Intermédiaire">Intermédiaire</option>
+                                <option value="Expert">Expert</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="editTelClient">Téléphone</label>
                             <input type="text" class="form-control" id="editTelClient" name="TelClient" required>
+                        </div>
+                         <div class="form-group">
+                            <label for="editCamping">Camping</label>
+                            <select class="form-control" id="editCamping" name="campingId">
+                                <option value="">Aucun Camping</option>
+                                {% for camping in campings %}
+                                    <option value="{{ camping.id }}">{{ camping.nomCamping }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="editDateInscriptionClient">Date Inscription</label>

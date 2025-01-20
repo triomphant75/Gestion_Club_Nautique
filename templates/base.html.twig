@@ -75,7 +75,7 @@
 
             <!-- Nav Item - Tables -->
             <li class="nav-item">
-                <a class="nav-link" href="tables.html">
+                <a class="nav-link" href="{{ path('location_index') }}">
                     <i class="fas fa-fw fa-map-marker-alt"></i>
                     <span>locations</span></a>
             </li>
@@ -102,6 +102,12 @@
                 <a class="nav-link" href="tables.html">
                     <i class="fas fa-fw fa-chalkboard-teacher"></i>
                     <span>Moniteurs</span></a>
+            </li>
+            <!-- Nav Item - Tables -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('camping_list') }}">
+                    <i class="fas fa-fw fa-campground"></i>
+                    <span>Camping</span></a>
             </li>
             <!-- Nav Item - Tables -->
             <li class="nav-item">
@@ -267,40 +273,54 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
-    <!-- Script Modal Client-->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- Script Modal Client-->
+    <script src="{{ asset('js/update_participant_status.js') }}"></script>
+    <script src="{{ asset('js/gestionClientForfait.js') }}"></script>
+    <script src="{{ asset('js/affichageFacture.js') }}"></script>
+
 
     <script>
-        $('#editClientModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            var nom = button.data('nom');
-            var prenom = button.data('prenom');
-            var adresse = button.data('adresse');
-            var email = button.data('email');
-            var niveau = button.data('niveau');
-            var tel = button.data('tel');
-            var date = button.data('date');
+    // Script Modal Client
+    $('#editClientModal').on('show.bs.modal', function (event) {
+     var button = $(event.relatedTarget); // Bouton déclencheur
+    var clientId = button.data('id'); // ID du client
 
-            var modal = $(this);
-            modal.find('#editNomClient').val(nom);
-            modal.find('#editPrenomClient').val(prenom);
-            modal.find('#editAdresseClient').val(adresse);
-            modal.find('#editEmailClient').val(email);
-            modal.find('#editNiveauClient').val(niveau);
-            modal.find('#editTelClient').val(tel);
-            modal.find('#editDateInscriptionClient').val(date);
-            modal.find('#editClientForm').attr('action', '/client/' + id + '/edit');
-        });
-         // Gestion du modal de suppression
-        $('#deleteClientModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Bouton qui a déclenché l'ouverture du modal
-            var id = button.data('id'); // Récupère l'ID du client
+    // Récupération des autres informations
+    var nom = button.data('nom');
+    var prenom = button.data('prenom');
+    var adresse = button.data('adresse');
+    var email = button.data('email');
+    var tel = button.data('tel');
+    var niveau = button.data('niveau');
+    var dateInscription = button.data('date');
+    var campingId = button.data('camping');
 
-            var modal = $(this);
-            modal.find('#deleteClientForm').attr('action', '/client/' + id); // Met à jour l'action du formulaire
-        });
+    // Mise à jour du formulaire
+    var modal = $(this);
+    modal.find('#editClientForm').attr('action', '/client/' + clientId + '/edit');
+    modal.find('#editNomClient').val(nom);
+    modal.find('#editPrenomClient').val(prenom);
+    modal.find('#editAdresseClient').val(adresse);
+    modal.find('#editEmailClient').val(email);
+    modal.find('#editTelClient').val(tel);
+    modal.find('#editNiveauClient').val(niveau);
+    modal.find('#editDateInscriptionClient').val(dateInscription);
+    modal.find('#editCamping').val(campingId);
+});
+
+
+
+    // Gestion du modal de suppression client
+    $('#deleteClientModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Bouton qui a déclenché l'ouverture du modal
+        var id = button.data('id'); // Récupère l'ID du client
+
+        var modal = $(this);
+        modal.find('#deleteClientForm').attr('action', '/client/' + id); // Met à jour l'action du formulaire
+    });
 
     // Script pour modifier les champs du modal de modification des forfaits
     document.addEventListener('DOMContentLoaded', function () {
@@ -317,20 +337,9 @@
             });
         }
 
-        // Script pour afficher les détails de la facture dans le modal
-        var viewFactureModal = document.getElementById('viewFactureModal');
-        if (viewFactureModal) {
-            viewFactureModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget;
-                document.getElementById('factureNum').textContent = button.getAttribute('data-num');
-                document.getElementById('factureMontant').textContent = button.getAttribute('data-montant');
-                document.getElementById('factureDate').textContent = button.getAttribute('data-date');
-                document.getElementById('factureAdresse').textContent = button.getAttribute('data-adresse');
-            });
-        }
+        
     });
+</script>
 
-
-    </script>
         {% endblock %}
 </html>

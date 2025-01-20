@@ -11,6 +11,7 @@ use App\Repository\ClientRepository;
 use App\Repository\ForfaitRepository;
 use App\Repository\PaiementRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\TypeForfait;
 
 class ForfaitController extends AbstractController
 {
@@ -26,7 +27,15 @@ public function createForfait(int $id, ClientRepository $clientRepository, Reque
     // Créer un forfait temporaire
     $forfait = new Forfait();
     $forfait->setClient($client);
-    $forfait->setTypeForfait($request->request->get('typeForfait'));
+
+
+    // Récupérer la valeur de l'énumération depuis la requête et la convertir en instance de TypeForfait
+    $typeForfait = $request->request->get('typeForfait');
+    if ($typeForfait) {
+        // Convertir la chaîne de caractères en instance de l'énumération TypeForfait
+        $forfait->setTypeForfait(TypeForfait::from($typeForfait)); // Conversion en instance d'énumération
+    }
+
     $forfait->setNombreSeance((int)$request->request->get('nombreSeance'));
     $forfait->setPrixForfait((float)$request->request->get('prixForfait'));
     $forfait->setPrixRemiseForfait((float)$request->request->get('prixRemiseForfait'));

@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Locations{% endblock %}
+
+{% block body %}
+    <h1>Liste des Locations</h1>
+
+    <!-- Bouton pour ouvrir le modal -->
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createLocationModal">
+        Ajouter une Location
+    </button>
+
+    <!-- Tableau des locations -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Client</th>
+                <th>Matériel</th>
+                <th>Durée</th>
+                <th>Prix</th>
+                <th>Etat</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for location in locations %}
+                <tr>
+                    <td>{{ location.id }}</td>
+                    <td>{{ location.client.nomClient }}</td>
+                    <td>{{ location.materiel.typeMateriel }}</td>
+                    <td>{{ location.dureeLocation|date('H:i') }}</td>
+                    <td>{{ location.prixLocation }} €</td>
+                    <td>{{ location.etatLocation }}</td>
+                    <td>
+                        <a href="{{ path('location_edit', { id: location.id }) }}" class="btn btn-warning btn-sm">Modifier</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <!-- Modal pour le formulaire d'ajout -->
+        <div class="modal fade" id="createLocationModal" tabindex="-1" aria-labelledby="createLocationModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createLocationModalLabel">Créer une nouvelle location</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {{ form_start(formLocation, {'attr': {'class': 'form'}}) }}
+
+                        <!-- Champ Client -->
+                        <div class="mb-3">
+                            {{ form_label(formLocation.client, 'Client', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(formLocation.client, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(formLocation.client) }}
+                        </div>
+
+                        <!-- Champ Matériel -->
+                        <div class="mb-3">
+                            {{ form_label(formLocation.materiel, 'Matériel', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(formLocation.materiel, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(formLocation.materiel) }}
+                        </div>
+
+                        <!-- Champ Durée de la location -->
+                        <div class="mb-3">
+                            {{ form_label(formLocation.dureeLocation, 'Durée de la location', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(formLocation.dureeLocation, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(formLocation.dureeLocation) }}
+                        </div>
+
+                        <!-- Champ Prix de la location -->
+                        <div class="mb-3">
+                            {{ form_label(formLocation.prixLocation, 'Prix de la location', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(formLocation.prixLocation, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(formLocation.prixLocation) }}
+                        </div>
+
+                        <!-- Champ Prix avec remise -->
+                        <div class="mb-3">
+                            {{ form_label(formLocation.prixLocationRemise, 'Prix avec remise (optionnel)', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(formLocation.prixLocationRemise, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(formLocation.prixLocationRemise) }}
+                        </div>
+
+                        <!-- Champ Date de la location -->
+                        <div class="mb-3">
+                            {{ form_label(formLocation.dateLocation, 'Date de la location', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(formLocation.dateLocation, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(formLocation.dateLocation) }}
+                        </div>
+
+                        <!-- Champ État de la location -->
+                        <div class="mb-3">
+                            {{ form_label(formLocation.etatLocation, 'État de la location', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(formLocation.etatLocation, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(formLocation.etatLocation) }}
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        <button type="submit" class="btn btn-success">Enregistrer</button>
+                    </div>
+                    {{ form_end(formLocation) }}
+                </div>
+            </div>
+        </div>
+
+{% endblock %}

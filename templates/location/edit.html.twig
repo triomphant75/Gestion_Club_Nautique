@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier une Location{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Modifier la Location</h1>
+
+        <div class="card">
+            <div class="card-body">
+                <a href="{{ path('location_index') }}" class="btn btn-primary mb-3">Retour</a>
+                
+                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                
+                <div class="mb-3">
+                    {{ form_row(form.nom) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.dateDebut) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.dateFin) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.montant) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.client) }}
+                </div>
+                <!-- Ajouter d'autres champs ici, si nécessaire -->
+
+                <button type="submit" class="btn btn-success">Mettre à jour</button>
+                
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

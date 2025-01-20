@@ -5,6 +5,10 @@
 {% block title %}Détails du Cours{% endblock %}
 
 {% block body %}
+
+    <a href="{{ path('cours_index') }}" class="btn btn-secondary">Retour à la liste des cours</a>
+
+    <br></br>
     <h1>Détails du Cours</h1>
 
     <p><strong>Date :</strong> {{ cours.dateCours|date('d/m/Y') }}</p>
@@ -21,5 +25,4 @@
         {% endfor %}
     </ul>
 
-    <a href="{{ path('cours_index') }}" class="btn btn-secondary">Retour à la liste des cours</a>
 {% endblock %}

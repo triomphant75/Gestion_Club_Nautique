@@ -3,13 +3,28 @@
 {% block title %}Ajouter des clients au cours{% endblock %}
 
 {% block body %}
-    <h1>Ajouter des clients au cours</h1>
+    <div class="container mt-5">
+        <h1 class="mb-4">Ajouter des clients au cours</h1>
 
-    <!-- Formulaire d'ajout de client au cours -->
-    <div>
-        {{ form_start(form) }}
-            {{ form_widget(form) }}
-            <button type="submit" class="btn btn-success">Ajouter</button>
-        {{ form_end(form) }}
+        <!-- Formulaire d'ajout de client au cours -->
+        <div class="card">
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                    <div class="form-group">
+                        {{ form_label(form.client, 'Client', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.client, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.dateInscriptionCours, 'Date d\'Inscription', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.dateInscriptionCours, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.statutParticipant, 'Statut', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.statutParticipant, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <button type="submit" class="btn btn-success">Ajouter</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
     </div>
 {% endblock %}

@@ -3,26 +3,63 @@
 {% block title %}Participants du Cours{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <h1>Participants du Cours : {{ cours.id }}</h1>
+    <div class="container mt-5">
+        <h1>Participants du Cours : {{ cours.id }}</h1>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Email</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for participation in participants %}
-                <tr>
-                    <td>{{ participation.client.nomClient }}</td>
-                    <td>{{ participation.client.prenomClient }}</td>
-                    <td>{{ participation.client.emailClient }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success" id="flash-message">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger" id="flash-message">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('warning') %}
+            <div class="alert alert-warning" id="flash-message">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Email</th>
+                        <th>Date d'Inscription</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for participation in participants %}
+                        <tr>
+                            <td>{{ participation.client.nomClient }}</td>
+                            <td>{{ participation.client.prenomClient }}</td>
+                            <td>{{ participation.client.emailClient }}</td>
+                            <td>{{ participation.dateInscriptionCours|date('d/m/Y') }}</td>
+                            <td>{{ participation.statutParticipant }}</td>
+                            <td>
+                                <form method="POST" action="{{ path('cours_participant_update_status', { id: cours.id, participantId: participation.id }) }}">
+                                    <select name="statutParticipant" class="form-select">
+                                        <option value="Présent" {% if participation.statutParticipant == 'Présent' %}selected{% endif %}>Présent</option>
+                                        <option value="Absent" {% if participation.statutParticipant == 'Absent' %}selected{% endif %}>Absent</option>
+                                        <option value="En attente" {% if participation.statutParticipant == 'En attente' %}selected{% endif %}>En attente</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-primary mt-2">Mettre à jour</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6">Aucun participant pour ce cours.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+    </div>
+
 {% endblock %}

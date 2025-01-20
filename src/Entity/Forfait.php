@@ -22,8 +22,8 @@ class Forfait
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateDebut = null;
 
-    #[ORM\Column(length: 100)]
-    private ?string $typeForfait = null;
+    #[ORM\Column(type: 'typeForfait')]
+    private TypeForfait $typeForfait;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateExpiration = null;
@@ -110,16 +110,14 @@ class Forfait
         return $this;
     }
 
-    public function getTypeForfait(): ?string
-    {
+    public function getTypeForfait(): TypeForfait {
         return $this->typeForfait;
     }
 
-    public function setTypeForfait(string $typeForfait): static
+    public function setTypeForfait(TypeForfait $typeForfait): self
     {
-        $this->typeForfait = $typeForfait;
-
-        return $this;
+    $this->typeForfait = $typeForfait;
+    return $this;
     }
 
     public function getDateExpiration(): ?\DateTimeInterface

@@ -4,6 +4,10 @@
 
 {% block body %}
     <h1>Facture #{{ facture.id }}</h1>
+
+    {# Informations sur le client #}
+    <h3>Client : {{ client.nomClient }} {{ client.prenomClient }}</h3>
+
     <table class="table">
         <tr>
             <th>Numéro de facture</th>
@@ -21,7 +25,25 @@
             <th>Date de la facture</th>
             <td>{{ facture.dateFacture|date('d-m-Y') }}</td>
         </tr>
+
+        {# Informations sur le paiement #}
+        <tr>
+            <th>Mode de Paiement</th>
+            <td>{{ paiement.modePaiement }}</td>
+        </tr>
+        <tr>
+            <th>Statut du Paiement</th>
+            <td>{{ paiement.statutPaiement }}</td>
+        </tr>
+        <tr>
+            <th>Montant payé</th>
+            <td>{{ paiement.montant }} €</td>
+        </tr>
+        <tr>
+            <th>Date de Paiement</th>
+            <td>{{ paiement.datePaiement|date('d-m-Y') }}</td>
+        </tr>
     </table>
-    
+
     <a href="{{ path('app_client_profile', {id: facture.paiement.client.id}) }}" class="btn btn-secondary">Retour au profil client</a>
 {% endblock %}

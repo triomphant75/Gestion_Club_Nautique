@@ -21,7 +21,7 @@ class UtilisationForfait
     private ?string $statutForfait = null;
 
     #[ORM\ManyToOne(inversedBy: 'UtilisationForfaits')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?Forfait $forfait = null;
 
     #[ORM\ManyToOne(inversedBy: 'utilisationForfaits')]

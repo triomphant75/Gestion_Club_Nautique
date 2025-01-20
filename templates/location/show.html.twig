@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la Location{% endblock %}
+
+{% block body %}
+    <h1>Détails de la Location</h1>
+
+    <p><strong>ID:</strong> {{ location.id }}</p>
+    <p><strong>Client:</strong> {{ location.client.nomClient }}</p>
+    <p><strong>Matériel:</strong> {{ location.materiel.typeMateriel }}</p>
+    <p><strong>Durée:</strong> {{ location.dureeLocation|date('H:i') }}</p>
+    <p><strong>Prix:</strong> {{ location.prixLocation }} €</p>
+    <p><strong>Etat:</strong> {{ location.etatLocation }}</p>
+
+    <a href="{{ path('location_index') }}" class="btn btn-primary">Retour à la Liste des Locations</a>
+{% endblock %}

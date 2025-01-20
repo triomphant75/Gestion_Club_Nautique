@@ -27,7 +27,7 @@ class Facture
     private ?\DateTimeImmutable $dateFacture = null;
 
     #[ORM\OneToOne(inversedBy: 'facture', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?Paiement $paiement = null;
 
 

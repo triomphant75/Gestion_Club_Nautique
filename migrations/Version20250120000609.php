@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250110091203 extends AbstractMigration
+final class Version20250120000609 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,17 +20,15 @@ final class Version20250110091203 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE facture ADD paiement_id INT NOT NULL');
-        $this->addSql('ALTER TABLE facture ADD CONSTRAINT FK_FE8664102A4C4478 FOREIGN KEY (paiement_id) REFERENCES paiement (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_FE8664102A4C4478 ON facture (paiement_id)');
+        $this->addSql('ALTER TABLE client ALTER niveau_client TYPE VARCHAR(255)');
+        $this->addSql('ALTER TABLE forfait ALTER type_forfait TYPE VARCHAR(255)');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SCHEMA public');
-        $this->addSql('ALTER TABLE facture DROP CONSTRAINT FK_FE8664102A4C4478');
-        $this->addSql('DROP INDEX UNIQ_FE8664102A4C4478');
-        $this->addSql('ALTER TABLE facture DROP paiement_id');
+        $this->addSql('ALTER TABLE forfait ALTER type_forfait TYPE VARCHAR(255)');
+        $this->addSql('ALTER TABLE client ALTER niveau_client TYPE VARCHAR(255)');
     }
 }

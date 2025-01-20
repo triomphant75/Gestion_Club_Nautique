@@ -44,18 +44,16 @@ class AddClientToCoursType extends AbstractType
                 ],
                 'data' => 'Inscrit', // Statut par défaut
                 'required' => true,
-            ])
-
-            ->add('submit', SubmitType::class, [
-                'label' => 'Ajouter Clients',
             ]);
+
+ 
             
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Participation::class, // Associe l'entité Participation
+            ///'data_class' => Participation::class, // Associe l'entité Participation
             'cours' => null, // On passe le cours pour faire un lien dans la base de données
         ]);
     }

@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un Paiement{% endblock %}
+
+{% block body %}
+    <h1>Ajouter un Paiement pour la Location</h1>
+
+    <!-- Formulaire de paiement -->
+    <form method="post">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-success">Enregistrer le Paiement</button>
+        {{ form_end(form) }}
+    </form>
+{% endblock %}
