@@ -1,0 +1,48 @@
+{# templates/materiel/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Liste des Matériels</h1>
+
+    <a href="{{ path('materiel_new') }}" class="btn btn-primary mb-3">
+        <i class="fas fa-plus"></i> Ajouter un Matériel
+    </a>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Type de Matériel</th>
+                <th>Caractéristique</th>
+                <th>Numéro de Série</th>
+                <th>Date de Mise en Service</th>
+                <th>État du Matériel</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for materiel in materiels %}
+                <tr>
+                    <td>{{ materiel.typeMateriel }}</td>
+                    <td>{{ materiel.caracteristique }}</td>
+                    <td>{{ materiel.numSerie }}</td>
+                    <td>{{ materiel.dateMiseEnService|date('Y-m-d') }}</td>
+                    <td>{{ materiel.etatMateriel }}</td>
+                    <td>
+                        <a href="{{ path('materiel_edit', {id: materiel.id}) }}" class="btn btn-warning" title="Modifier ce matériel">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        {% if materiel.etatMateriel != 'En Panne' %}
+                            <a href="{{ path('materiel_panne', {id: materiel.id}) }}" class="btn btn-danger" title="Déclarer ce matériel en panne">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </a>
+                        {% endif %}
+                        <a href="{{ path('materiel_delete', {id: materiel.id}) }}" class="btn btn-danger" title="Supprimer ce matériel" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce matériel ?')">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

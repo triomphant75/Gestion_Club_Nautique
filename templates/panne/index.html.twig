@@ -1,0 +1,83 @@
+{# templates/panne/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Liste des Pannes</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Matériel</th>
+                <th>Description</th>
+                <th>Date de la Panne</th>
+                <th>Date de Début de Réparation</th>
+                <th>Date de Fin de Réparation</th>
+                <th>État de la Panne</th>
+                <th>Commentaire</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for panne in pannes %}
+                <tr>
+                    <td>{{ panne.materiel.typeMateriel }}</td>
+                    <td>{{ panne.description }}</td>
+                    <td>{{ panne.datePanne|date('Y-m-d') }}</td>
+                    <td>{{ panne.dateDebutReparation|date('Y-m-d') }}</td>
+                    <td>{{ panne.dateFinReparation|date('Y-m-d') }}</td>
+                    <td>{{ panne.etatPanne }}</td>
+                    <td>{{ panne.commentaire }}</td>
+                    <td>
+                        {% if panne.etatPanne == 'Déclaré' or panne.etatPanne == 'En cours' %}
+                            <div class="d-flex">
+                                <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#resolveModal{{ panne.id }}">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#horsServiceModal{{ panne.id }}">
+                                    <i class="fas fa-wrench"></i>
+                                </button>
+                            </div>
+                        {% endif %}
+                    </td>
+                </tr>
+                <!-- Modal for Resolving Panne -->
+                <div class="modal fade" id="resolveModal{{ panne.id }}" tabindex="-1" aria-labelledby="resolveModalLabel{{ panne.id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="resolveModalLabel{{ panne.id }}">Marquer la panne comme résolue</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Êtes-vous sûr de vouloir marquer cette panne comme résolue ?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                <a href="{{ path('panne_resolve', {id: panne.id}) }}" class="btn btn-primary">Résolu</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal for Hors Service Panne -->
+                <div class="modal fade" id="horsServiceModal{{ panne.id }}" tabindex="-1" aria-labelledby="horsServiceModalLabel{{ panne.id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="horsServiceModalLabel{{ panne.id }}">Marquer la panne comme hors service</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Êtes-vous sûr de vouloir marquer cette panne comme hors service ?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                <a href="{{ path('panne_hors_service', {id: panne.id}) }}" class="btn btn-primary">Hors Service</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

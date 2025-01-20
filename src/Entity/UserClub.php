@@ -44,7 +44,7 @@ class UserClub implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 120)]
     protected ?string $adresseUser = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     protected ?string $emailUser = null;
 
     #[ORM\Column(length: 255)]
@@ -183,4 +183,7 @@ class UserClub implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+  
+
 }

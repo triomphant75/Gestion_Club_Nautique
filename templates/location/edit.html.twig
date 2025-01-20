@@ -4,33 +4,84 @@
 
 {% block body %}
     <div class="container mt-5">
+        <a href="{{ path('location_index') }}" class="btn btn-primary mb-3">Retour</a>
         <h1 class="mb-4">Modifier la Location</h1>
 
         <div class="card">
             <div class="card-body">
-                <a href="{{ path('location_index') }}" class="btn btn-primary mb-3">Retour</a>
-                
                 {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
                 
                 <div class="mb-3">
-                    {{ form_row(form.nom) }}
+                    <label for="{{ form.client.vars.id }}" class="form-label">Client</label>
+                    {{ form_widget(form.client, {'attr': {'class': 'form-select'}}) }}
+                    {% if form.client.vars.errors %}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.client) }}
+                        </div>
+                    {% endif %}
                 </div>
-                <div class="mb-3">
-                    {{ form_row(form.dateDebut) }}
-                </div>
-                <div class="mb-3">
-                    {{ form_row(form.dateFin) }}
-                </div>
-                <div class="mb-3">
-                    {{ form_row(form.montant) }}
-                </div>
-                <div class="mb-3">
-                    {{ form_row(form.client) }}
-                </div>
-                <!-- Ajouter d'autres champs ici, si nécessaire -->
 
-                <button type="submit" class="btn btn-success">Mettre à jour</button>
-                
+                <div class="mb-3">
+                    <label for="{{ form.materiel.vars.id }}" class="form-label">Matériel</label>
+                    {{ form_widget(form.materiel, {'attr': {'class': 'form-select'}}) }}
+                    {% if form.materiel.vars.errors %}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.materiel) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.dureeLocation.vars.id }}" class="form-label">Durée de la location</label>
+                    {{ form_widget(form.dureeLocation, {'attr': {'class': 'form-control'}}) }}
+                    {% if form.dureeLocation.vars.errors %}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.dureeLocation) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.prixLocation.vars.id }}" class="form-label">Prix de la location</label>
+                    {{ form_widget(form.prixLocation, {'attr': {'class': 'form-control'}}) }}
+                    {% if form.prixLocation.vars.errors %}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.prixLocation) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.prixLocationRemise.vars.id }}" class="form-label">Prix avec remise (optionnel)</label>
+                    {{ form_widget(form.prixLocationRemise, {'attr': {'class': 'form-control'}}) }}
+                    {% if form.prixLocationRemise.vars.errors %}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.prixLocationRemise) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.dateLocation.vars.id }}" class="form-label">Date de la location</label>
+                    {{ form_widget(form.dateLocation, {'attr': {'class': 'form-control'}}) }}
+                    {% if form.dateLocation.vars.errors %}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.dateLocation) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.etatLocation.vars.id }}" class="form-label">État de la location</label>
+                    {{ form_widget(form.etatLocation, {'attr': {'class': 'form-select'}}) }}
+                    {% if form.etatLocation.vars.errors %}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.etatLocation) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <button class="btn btn-success">Mettre à jour</button>
                 {{ form_end(form) }}
             </div>
         </div>

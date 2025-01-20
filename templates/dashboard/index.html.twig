@@ -4,87 +4,59 @@
 {% block body %}
     <!-- Content Row -->
     <div class="row">
-        <!-- Earnings (Monthly) Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Earnings (Monthly)
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Earnings (Annual) Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
+        <!-- Clients inscrits -->
+        <div class="col-xl-3 col-md-6 mb-5"> <!-- Augmenter l'espacement avec mb-5 -->
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Earnings (Annual)
+                                Clients Inscrits
                             </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ nombreClients }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                            <i class="fas fa-user-friends fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Tasks Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
+        <!-- Matériel Disponible Card Example -->
+        <div class="col-xl-3 col-md-6 mb-5"> <!-- Augmenter l'espacement avec mb-5 -->
+            <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Tasks
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Matériels Disponibles
                             </div>
-                            <div class="row no-gutters align-items-center">
-                                <div class="col-auto">
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
-                                </div>
-                                <div class="col">
-                                    <div class="progress progress-sm mr-2">
-                                        <div class="progress-bar bg-info" role="progressbar"
-                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                            aria-valuemax="100"></div>
-                                    </div>
-                                </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ nombreMaterielsDisponibles }}
                             </div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                            <i class="fas fa-box fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Pending Requests Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
+        <!-- Card pour le nombre de Campings Partenaires -->
+        <div class="col-xl-3 col-md-6 mb-5"> <!-- Augmenter l'espacement avec mb-5 -->
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Pending Requests
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Nombre de Campings Partenaires
                             </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ nombreCampings }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                            <i class="fas fa-campground fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -95,52 +67,49 @@
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Cours planifiés </h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Position</th>
-                            <th>Office</th>
-                            <th>Age</th>
-                            <th>Start date</th>
-                            <th>Salary</th>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Heure de début</th>
+                            <th>Heure de fin</th>
+                            <th>État</th>
+                            <th>Nombre de places</th>
+                            <th>Moniteur</th>
+                            <th>Matériaux</th>
                         </tr>
                     </thead>
-                    <tfoot>
-                        <tr>
-                            <th>Name</th>
-                            <th>Position</th>
-                            <th>Office</th>
-                            <th>Age</th>
-                            <th>Start date</th>
-                            <th>Salary</th>
-                        </tr>
-                    </tfoot>
                     <tbody>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>System Architect</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td>2011/04/25</td>
-                            <td>$320,800</td>
-                        </tr>
-                        <tr>
-                            <td>Garrett Winters</td>
-                            <td>Accountant</td>
-                            <td>Tokyo</td>
-                            <td>63</td>
-                            <td>2011/07/25</td>
-                            <td>$170,750</td>
-                        </tr>
+                        {% for cours in cours %}
+                            <tr>
+                                <td>{{ cours.id }}</td>
+                                <td>{{ cours.dateCours|date('d/m/Y') }}</td>
+                                <td>{{ cours.heureDebutCours|date('H:i') }}</td>
+                                <td>{{ cours.heureFinCours|date('H:i') }}</td>
+                                <td>{{ cours.etatCours }}</td>
+                                <td>{{ cours.nombreDePlace }}</td>
+                                <td>
+                                    {{ cours.moniteur.prenomUser }} {{ cours.moniteur.username }}
+                                </td>
+                                <td>
+                                    {% for materiel in cours.materiels %}
+                                        {{ materiel.typeMateriel }}{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="8" class="text-center">Aucun cours planifié disponible.</td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 {% endblock %}
-

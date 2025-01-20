@@ -11,6 +11,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: MaterielRepository::class)]
 class Materiel
 {
+    const ETAT_DISPONIBLE = 'Disponible';
+    const ETAT_HORS_SERVICE = 'Hors Service';
+    const ETAT_LOUE = 'Loué';
+    const ETAT_EN_PANNE = 'En Panne';
+
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

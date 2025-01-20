@@ -1,0 +1,30 @@
+{# templates/materiel/panne.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="mb-4">Déclarer une Panne</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.description) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.datePanne) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.dateDebutReparation) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.dateFinReparation) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.etatPanne) }}
+            </div>
+        </div>
+        {{ form_row(form.commentaire) }}
+        <button class="btn btn-danger mt-3">Déclarer la Panne</button>
+        <a href="{{ path('materiel_index') }}" class="btn btn-secondary mt-3 ml-2">Retour</a>
+    {{ form_end(form) }}
+{% endblock %}

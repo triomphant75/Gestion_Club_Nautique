@@ -50,7 +50,7 @@ class Cours
     private Collection $materiels;
 
     #[ORM\ManyToOne(inversedBy: 'cours')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete:'CASCADE')]
     private ?Moniteur $moniteur = null;
 
     #[ORM\ManyToOne(inversedBy: 'cours')]

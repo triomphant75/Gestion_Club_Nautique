@@ -17,6 +17,7 @@
                 <th>ID</th>
                 <th>Client</th>
                 <th>Matériel</th>
+                <th>Date Location</th>
                 <th>Durée</th>
                 <th>Prix</th>
                 <th>Etat</th>
@@ -29,6 +30,7 @@
                     <td>{{ location.id }}</td>
                     <td>{{ location.client.nomClient }}</td>
                     <td>{{ location.materiel.typeMateriel }}</td>
+                    <td>{{ location.dateLocation|date('d/m/Y')}}</td>
                     <td>{{ location.dureeLocation|date('H:i') }}</td>
                     <td>{{ location.prixLocation }} €</td>
                     <td>{{ location.etatLocation }}</td>

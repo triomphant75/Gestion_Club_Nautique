@@ -166,11 +166,15 @@ public function createPaiement(
 
     // Vérifier si le bouton "Annuler" est soumis pour supprimer la location partielle
     if ($request->isMethod('POST') && $request->request->get('cancel')) {
-        // Supprimer la location partielle
+       // Débogage
+        dump('Annulation en cours'); // Ajout temporaire
+        dump($request->request->all());
+        die(); // Arrêtez l'exécution ici pour voir le résultat dans Symfony Debug Toolbar
+
+        // Supprimer la location
         $entityManager->remove($location);
         $entityManager->flush();
 
-        // Ajouter un message d'annulation
         $this->addFlash('success', 'La location a été annulée.');
 
         // Rediriger vers la liste des locations

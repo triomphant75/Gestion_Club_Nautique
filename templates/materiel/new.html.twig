@@ -1,0 +1,29 @@
+{# templates/materiel/new.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="mb-4">Ajouter un Matériel</h1>
+
+    {{ form_start(form) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.typeMateriel) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.numSerie) }}
+            </div>
+        </div>
+        {{ form_row(form.caracteristique) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.dateMiseEnService) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.etatMateriel) }}
+            </div>
+        </div>
+        <button class="btn btn-primary mt-3">Ajouter le Matériel</button>
+        <a href="{{ path('materiel_index') }}" class="btn btn-secondary mt-3 ml-2">Retour</a>
+    {{ form_end(form) }}
+{% endblock %}
