@@ -9,11 +9,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class PanneController extends AbstractController
 {
     #[Route('/panne', name: 'panne_index')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function ConsulterPanne(EntityManagerInterface $entityManager): Response
     {
         $pannes = $entityManager->getRepository(Panne::class)->findBy(['etatPanne' => ['Déclaré', 'En cours', 'Hors Service']]);
 
@@ -33,6 +34,7 @@ class PanneController extends AbstractController
     }
 
     #[Route('/panne/{id}/hors_service', name: 'panne_hors_service')]
+    #[IsGranted('ROLE_PROPRIETAIRE')]
     public function horsServicePanne(Panne $panne, EntityManagerInterface $entityManager): Response
     {
         $panne->setEtatPanne('Hors Service');

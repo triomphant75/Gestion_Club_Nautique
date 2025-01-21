@@ -15,8 +15,9 @@ use App\Entity\TypeForfait;
 
 class ForfaitController extends AbstractController
 {
+
     #[Route('/client/{id}/forfait/create', name: 'app_forfait_create', methods: ['POST'])]
-public function createForfait(int $id, ClientRepository $clientRepository, Request $request, EntityManagerInterface $entityManager): Response
+public function attribuerForfait(int $id, ClientRepository $clientRepository, Request $request, EntityManagerInterface $entityManager): Response
 {
     // Récupérer le client
     $client = $clientRepository->find($id);
@@ -50,6 +51,26 @@ public function createForfait(int $id, ClientRepository $clientRepository, Reque
     // Rediriger vers la page de paiement avec l'ID du forfait temporaire
     return $this->redirectToRoute('app_paiement_create', ['id' => $client->getId(), 'forfait_id' => $forfait->getId()]);
 }
+
+
+#[Route('/forfait', name: 'forfait_index', methods: ['GET'])]
+public function consulterForfait(Request $request, ForfaitRepository $forfaitRepository): Response
+{
+     // Récupérer le terme de recherche 
+     $query = $request->query->get('q', '');
+
+     // Si une recherche est effectuée, filtrer les résultats
+     $forfaits = $query
+         ? $forfaitRepository->findByClientName($query)
+         : $forfaitRepository->findAll();
+
+    return $this->render('forfait/index.html.twig', [
+        'forfaits' => $forfaits,
+        'query' => $query, // Pour garder le terme de recherche dans le champ
+    ]);
+}
+
+
 
     
     

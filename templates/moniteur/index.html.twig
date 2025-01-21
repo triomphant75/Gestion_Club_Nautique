@@ -3,151 +3,73 @@
 
 {% block title %}Gestion des Moniteurs{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .container {
-            margin-top: 20px;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .list-group-item {
-            margin-bottom: 10px;
-        }
-
-        .table th {
-            background-color: #f2f2f2;
-        }
-
-        .btn-primary, .btn-danger, .btn-success {
-            margin-right: 5px;
-        }
-
-        .search-bar {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 20px;
-        }
-
-        .search-bar input {
-            width: 200px;
-            margin-left: 10px;
-        }
-
-        .search-bar label {
-            margin-top: 7px;
-            font-size: 14px;
-        }
-
-        .btn-icon {
-            background: none;
-            border: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .btn-icon i {
-            color: white;
-            background-color: orange;
-            border-radius: 50%;
-            padding: 5px;
-            margin-right: 5px;
-        }
-
-        .btn-icon .fa-trash {
-            background-color: red;
-        }
-
-        .add-button {
-            margin-top: 20px;
-        }
-
-        .form-container {
-            margin-top: 20px;
-            display: none;
-        }
-
-        .modal-content {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            pointer-events: auto;
-            background-color: #fff;
-            background-clip: padding-box;
-            border: 1px solid rgba(0, 0, 0, .2);
-            border-radius: .3rem;
-            outline: 0;
-        }
-    </style>
-{% endblock %}
-
 {% block body %}
-<div class="container">
-    <h1>Gestion des Moniteurs</h1>
-    <div class="row">
-        <div class="col-md-12 search-bar">
-            <label for="searchMoniteur">Rechercher un moniteur</label>
-            <input type="text" class="form-control" id="searchMoniteur" placeholder="Nom ou email">
-        </div>
+<div class="container mt-4">
+    <h1 class="mb-4">Gestion des Moniteurs</h1>
 
-        <div class="add-button">
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addMoniteurModal">Ajouter un moniteur</button>
-        </div>
-
-        <div class="col-md-12">
-            <h2>Liste des Moniteurs</h2>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Prénom</th>
-                        <th>Adresse</th>
-                        <th>Spécialité</th>
-                        <th>Diplôme</th>
-                        <th>Statut</th>
-                        <th>Options</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for moniteur in moniteurs %}
-                        <tr>
-                            <td>{{ moniteur.username }}</td>
-                            <td>{{ moniteur.prenomUser }}</td>
-                            <td>{{ moniteur.adresseUser }}</td>
-                            <td>{{ moniteur.specialite }}</td>
-                            <td>{{ moniteur.diplome }}</td>
-                            <td>{{ moniteur.statutUser }}</td> <!-- Affichage du statut -->
-                            <td>
-                                <!-- Boutons de modification et suppression -->
-                                <button type="button" class="btn btn-icon edit-btn" data-toggle="modal" data-target="#editMoniteurModal" data-id="{{ moniteur.id }}">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button type="button" class="btn btn-icon delete-btn" data-toggle="modal" data-target="#modalConfirm" data-id="{{ moniteur.id }}">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                                <!-- Bouton pour changer le statut -->
-                                <form action="{{ path('change_statut', { 'id': moniteur.id }) }}" method="post" style="display:inline;">
-                                    <button type="submit" class="btn btn-warning">{{ moniteur.statutUser == 'Disponible' ? 'Rendre Indisponible' : 'Rendre Disponible' }}</button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="6">Aucun moniteur disponible.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <!-- Barre de recherche -->
+    <div class="mb-3">
+        <input type="text" class="form-control" id="searchMoniteur" placeholder="Rechercher un moniteur...">
     </div>
+
+    <!-- Bouton pour ajouter un moniteur -->
+    <div class="mb-4">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMoniteurModal">
+            <i class="fas fa-plus-circle"></i> Ajouter un moniteur
+        </button>
+    </div>
+
+    <!-- Tableau des moniteurs -->
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Adresse</th>
+                <th>Spécialité</th>
+                <th>Diplôme</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for moniteur in moniteurs %}
+                <tr>
+                    <td>{{ moniteur.username }}</td>
+                    <td>{{ moniteur.prenomUser }}</td>
+                    <td>{{ moniteur.adresseUser }}</td>
+                    <td>{{ moniteur.specialite }}</td>
+                    <td>{{ moniteur.diplome }}</td>
+                    <td>{{ moniteur.statutUser }}</td>
+                    <td>
+                        <!-- Bouton Modifier -->
+                        <a href="{{ path('edit_moniteur', {id: moniteur.id}) }}" class="btn btn-warning btn-sm" title="Modifier">
+                            <i class="fas fa-edit"></i>
+                        </a>
+
+                        <!-- Bouton Supprimer -->
+                        <button type="button" class="btn btn-danger btn-sm delete-btn" data-id="{{ moniteur.id }}" data-bs-toggle="modal" data-bs-target="#modalConfirm" title="Supprimer">
+                            <i class="fas fa-trash"></i>
+                        </button>
+
+                        <!-- Bouton Changer Statut -->
+                        <form action="{{ path('change_statut', { 'id': moniteur.id }) }}" method="post" style="display:inline;" title="Changer le statut">
+                            <button type="submit" class="btn btn-info btn-sm">
+                                <i class="fas fa-exchange-alt"></i> {{ moniteur.statutUser == 'Disponible' ? 'Indisponible' : 'Disponible' }}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7" class="text-center">Aucun moniteur disponible.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
-<!-- Modal pour ajouter un moniteur -->
+<!-- Modal Ajouter un Moniteur -->
 <div class="modal fade" id="addMoniteurModal" tabindex="-1" aria-labelledby="addMoniteurModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -158,70 +80,58 @@
             <div class="modal-body">
                 {{ form_start(add_form) }}
                     {{ form_widget(add_form) }}
-                    <button class="btn btn-success" type="submit">Enregistrer</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <div class="text-end mt-3">
+                        <button class="btn btn-success" type="submit">
+                            <i class="fas fa-save"></i> Enregistrer
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i> Annuler
+                        </button>
+                    </div>
                 {{ form_end(add_form) }}
             </div>
         </div>
     </div>
 </div>
 
-
-<!-- Modal pour modifier un moniteur -->
-<div class="modal fade" id="editMoniteurModal" tabindex="-1" aria-labelledby="editMoniteurModalLabel" aria-hidden="true">
+<!-- Modal Confirmation Suppression -->
+<div class="modal fade" id="modalConfirm" tabindex="-1" aria-labelledby="modalConfirmLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editMoniteurModalLabel">Modifier le Moniteur</h5>
+                <h5 class="modal-title" id="modalConfirmLabel">Confirmation de suppression</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                {{ form_start(edit_form) }}
-                    {{ form_widget(edit_form) }}
-                    <button class="btn btn-success" type="submit">Enregistrer</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                {{ form_end(edit_form) }}
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Confirmation Suppression -->
-<div class="modal fade" id="modalConfirm" tabindex="-1" role="dialog" aria-labelledby="modalConfirmLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalConfirmLabel">Confirmation</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Voulez-vous vraiment supprimer ce moniteur ?
+                Êtes-vous sûr de vouloir supprimer ce moniteur ?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="confirmDelete">Oui</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                <button type="button" class="btn btn-primary" id="confirmDelete">
+                    <i class="fas fa-check"></i> Oui
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Non
+                </button>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
-        $(document).ready(function() {
-            // Logique pour la suppression
-            $('#confirmDelete').click(function() {
-                var moniteurId = $('#modalConfirm').data('id');
-                window.location.href = "{{ path('moniteur_delete', {id: 'id'}) }}".replace('id', moniteurId);
-            });
+        document.addEventListener('DOMContentLoaded', function () {
+            const confirmDelete = document.getElementById('confirmDelete');
+            const modalConfirm = document.getElementById('modalConfirm');
 
-            $('.delete-btn').click(function() {
-                var moniteurId = $(this).data('id');
-                $('#modalConfirm').data('id', moniteurId);
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const moniteurId = this.getAttribute('data-id');
+                    confirmDelete.onclick = function () {
+                        window.location.href = "{{ path('moniteur_delete', {id: 'ID'}) }}".replace('ID', moniteurId);
+                    };
+                });
             });
         });
     </script>

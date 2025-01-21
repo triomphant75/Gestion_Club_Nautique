@@ -26,6 +26,12 @@ security:
                 path: app_logout
                 target: app_login
 
+    role_hierarchy:
+        ROLE_MONITEUR: [ROLE_USER]
+        ROLE_COMPAGNE_PROPRIETAIRE: [ROLE_USER]
+        ROLE_PROPRIETAIRE: [ROLE_USER]
+        ROLE_GESTIONNAIRE: [ROLE_USER]
+
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
@@ -35,7 +41,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-         - { path: ^/admin, roles: ROLE_ADMIN }
+         - { path: ^/user, roles: [ROLE_GESTIONNAIRE, ROLE_PROPRIETAIRE] }
          - { path: ^/profile, roles: ROLE_USER }
       
 

@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Repository\CampingRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,8 +14,8 @@ use App\Form\CampingType;
 
 class CampingController extends AbstractController
 {
-    #[Route('/campings', name: 'camping_list')]
-    public function list(CampingRepository $campingRepository): Response
+    #[Route('/camping', name: 'camping_list')]
+    public function consulterListe(CampingRepository $campingRepository): Response
     {
         $campings = $campingRepository->findAll();
 
@@ -24,7 +25,8 @@ class CampingController extends AbstractController
     }
 
     #[Route('/camping/new', name: 'camping_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[IsGranted('ROLE_PROPRIETAIRE')]
+    public function creerCamping(Request $request, EntityManagerInterface $entityManager): Response
     {
         $camping = new Camping();
         $form = $this->createForm(CampingType::class, $camping);

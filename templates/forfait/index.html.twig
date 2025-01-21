@@ -1,20 +1,90 @@
+{# templates/forfait/index.html.twig #}
+
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ForfaitController!{% endblock %}
+{% block title %}Liste des Forfaits{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+    .search-bar {
+        display: flex;
+        flex-direction: column; /* Empile les éléments */
+        align-items: flex-end; /* Aligne les éléments à droite */
+        margin-bottom: 20px;
+        margin-right: 20px; /* Espacement par rapport à la bordure droite */
+    }
+
+    .search-label {
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 5px; /* Espacement avec le champ */
+    }
+
+    .form-control {
+        width: 300px;
+        margin-bottom: 10px; /* Ajoute un espacement avec le bouton */
+        padding: 10px;
+        font-size: 1rem;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 1rem;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 180px;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+    }
 </style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/triom/Desktop/IDMC/Gestion_Club_Nautique_git/src/Controller/ForfaitController.php</code></li>
-        <li>Your template at <code>C:/Users/triom/Desktop/IDMC/Gestion_Club_Nautique_git/templates/forfait/index.html.twig</code></li>
-    </ul>
-</div>
+{% endblock %}
+
+{% block body %}
+    <h1>Liste des Forfaits</h1>
+    <div class="col-md-12 search-bar flex-end flex">
+        <form action="{{ path('forfait_index') }}" method="get">
+            <label for="searchForfait">Rechercher un forfait</label>
+            <input type="text" class="form-control" id="searchForfait" name="q" placeholder="Nom du client" value="{{ query }}">
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </form>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Nombre de Séances</th>
+                <th>Date de Début</th>
+                <th>Date d'Expiration</th>
+                <th>Prix</th>
+                <th>Prix avec Remise</th>
+                <th>Nom du Client</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for forfait in forfaits %}
+                <tr>
+                    <td>{{ forfait.id }}</td>
+                    <td>{{ forfait.typeForfait.value }}</td>
+                    <td>{{ forfait.nombreSeance }}</td>
+                    <td>{{ forfait.dateDebut|date('d-m-Y') }}</td>
+                    <td>{{ forfait.dateExpiration|date('d-m-Y') }}</td>
+                    <td>{{ forfait.prixForfait }}</td>
+                    <td>{{ forfait.prixRemiseForfait }}</td>
+                    <td>{{ forfait.client.nomClient }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

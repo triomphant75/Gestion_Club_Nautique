@@ -40,4 +40,16 @@ class ForfaitRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findByClientName(string $name): array
+    {
+        return $this->createQueryBuilder('f')
+            ->join('f.client', 'c') // Assure-toi que la relation est bien définie
+            ->where('c.nomClient LIKE :name')
+            ->setParameter('name', '%' . $name . '%')
+            ->orderBy('f.dateDebut', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
+

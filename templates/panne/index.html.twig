@@ -30,13 +30,20 @@
                     <td>{{ panne.commentaire }}</td>
                     <td>
                         {% if panne.etatPanne == 'Déclaré' or panne.etatPanne == 'En cours' %}
+                        
                             <div class="d-flex">
+                            {% if is_granted('ROLE_PROPRIETAIRE')%}
+
                                 <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#resolveModal{{ panne.id }}">
                                     <i class="fas fa-check"></i>
                                 </button>
+                            {% endif %}
+                            {% if is_granted('ROLE_PROPRIETAIRE')%}
                                 <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#horsServiceModal{{ panne.id }}">
                                     <i class="fas fa-wrench"></i>
                                 </button>
+                            {% endif %}
+
                             </div>
                         {% endif %}
                     </td>

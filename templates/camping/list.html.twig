@@ -5,9 +5,9 @@
 
 {% block body %}
     <h1>Liste des Campings</h1>
-
+{% if is_granted('ROLE_PROPRIETAIRE') %}
     <a href="{{ path('camping_new') }}" class="btn btn-primary">Ajouter un Camping</a>
-
+{% endif %}
    
     <table class="table">
         <thead>

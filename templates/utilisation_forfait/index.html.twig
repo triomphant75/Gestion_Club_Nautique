@@ -1,0 +1,31 @@
+{# templates/utilisation_forfait/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Utilisations des Forfaits{% endblock %}
+
+{% block body %}
+    <h1>Liste des Utilisations des Forfaits</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date d'Utilisation</th>
+                <th>Statut du Forfait</th>
+                <th>Forfait</th>
+                <th>Participation</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for utilisation in utilisations %}
+                <tr>
+                    <td>{{ utilisation.id }}</td>
+                    <td>{{ utilisation.dateUtilisation|date('d-m-Y') }}</td>
+                    <td>{{ utilisation.statutForfait }}</td>
+                    <td>{{ utilisation.forfait.typeForfait.value }}</td>
+                    <td>{{ utilisation.participation.client.nomClient }} - {{ utilisation.participation.cours.id }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Paiements{% endblock %}
+
+{% block body %}
+    <h1 class="my-4">Liste des Paiements</h1>
+    <div class="mb-3 d-flex justify-content-end">
+        <div class="input-group">
+            <input type="text" class="form-control" id="searchInput" placeholder="Rechercher un paiement...">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Client</th>
+                    <th>Montant</th>
+                    <th>Mode de Paiement</th>
+                    <th>Statut</th>
+                    <th>Date</th>
+                    <th>Forfait</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paiement in paiements %}
+                    <tr>
+                        <td>{{ paiement.id }}</td>
+                        <td>{{ paiement.client.nomClient }} {{ paiement.client.prenomClient }}</td>
+                        <td>{{ paiement.montant | number_format(2, '.', ',') }} €</td>
+                        <td>{{ paiement.modePaiement }}</td>
+                        <td>{{ paiement.statutPaiement }}</td>
+                        <td>{{ paiement.datePaiement | date('d/m/Y H:i') }}</td>
+                        <td>
+                            {% if paiement.forfait %}
+                                Forfait #{{ paiement.forfait.id }} - {{ paiement.forfait.typeForfait.value }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if paiement.location %}
+                                Location #{{ paiement.location.id }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                     
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center">Aucun paiement trouvé.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

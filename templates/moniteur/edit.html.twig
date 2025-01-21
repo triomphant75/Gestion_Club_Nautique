@@ -1,7 +1,33 @@
 {# templates/moniteur/edit.html.twig #}
 
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn btn-success" type="submit">Enregistrer</button>
-    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-{{ form_end(form) }}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="mb-4">Modifier un Moniteur</h1>
+
+    {{ form_start(form) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.username) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.prenomUser) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.emailUser) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.specialite) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.statutUser) }}
+            </div>
+        </div>
+        <button class="btn btn-warning mt-3">Modifier le Moniteur</button>
+        <a href="{{ path('moniteur_index') }}" class="btn btn-secondary mt-3 ml-2">Retour</a>
+    {{ form_end(form) }}
+{% endblock %}

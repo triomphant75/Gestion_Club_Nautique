@@ -53,8 +53,8 @@ class Cours
     #[ORM\JoinColumn(nullable: false, onDelete:'CASCADE')]
     private ?Moniteur $moniteur = null;
 
-    #[ORM\ManyToOne(inversedBy: 'cours')]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\ManyToOne(inversedBy: 'cours',)]
+    #[ORM\JoinColumn(nullable: true, onDelete:'CASCADE')]
     private ?Proprietaire $proprietaire = null;
 
     public function __construct()

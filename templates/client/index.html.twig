@@ -68,9 +68,11 @@
                                 data-date="{{ client.DateInscriptionClient|date('Y-m-d') }}">
                             <i class="fas fa-edit"></i>
                         </button>
+                        {% if is_granted('ROLE_PROPRIETAIRE') or is_granted('ROLE_GESTIONNAIRE') %}
                         <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteClientModal" data-id="{{ client.id }}">
                             <i class="fas fa-trash"></i>
                         </button>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

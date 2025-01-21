@@ -12,62 +12,68 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
 
 class MoniteurController extends AbstractController
 {
-    #[Route('/moniteur', name: 'moniteur_index')]
-    public function index(ManagerRegistry $doctrine, Request $request, UserPasswordHasherInterface $passwordHasher): Response
-{
-    $repository = $doctrine->getRepository(Moniteur::class);
-    $moniteurs = $repository->findAll();
+    #[Route('/moniteur', name: 'moniteur_index', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_PROPRIETAIRE')]
+    public function creerMoniteur(
+        ManagerRegistry $doctrine,
+        Request $request,
+        UserPasswordHasherInterface $passwordHasher
+    ): Response {
+        $repository = $doctrine->getRepository(Moniteur::class);
+        $moniteurs = $repository->findAll();
 
-    $moniteur = new Moniteur();
-    $addForm = $this->createForm(AddMoniteurType::class, $moniteur);
+        $moniteur = new Moniteur();
+        $addForm = $this->createForm(AddMoniteurType::class, $moniteur);
 
-    $addForm->handleRequest($request);
-    if ($addForm->isSubmitted() && $addForm->isValid()) {
-        // Encoder le mot de passe
-        $password = $passwordHasher->hashPassword($moniteur, $moniteur->getPassword());
-        $moniteur->setPassword($password);
+        $addForm->handleRequest($request);
+        if ($addForm->isSubmitted() && $addForm->isValid()) {
+            // Encode password and set default roles/statut
+            $password = $passwordHasher->hashPassword($moniteur, $moniteur->getPassword());
+            $moniteur->setPassword($password);
+            $moniteur->setRoles(['ROLE_MONITEUR']);
+            $moniteur->setStatutUser('Disponible');
 
-        $moniteur->setRoles(['ROLE_MONITEUR']);
-        $moniteur->setStatutUser('Disponible');
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($moniteur);
+            $entityManager->flush();
 
-        $entityManager = $doctrine->getManager();
-        $entityManager->persist($moniteur);
-        $entityManager->flush();
+            $this->addFlash('success', 'Moniteur ajouté avec succès.');
+            return $this->redirectToRoute('moniteur_index');
+        }
 
-        return $this->redirectToRoute('moniteur_index');
+        $editForm = $this->createForm(MoniteurType::class);
+
+        return $this->render('moniteur/index.html.twig', [
+            'moniteurs' => $moniteurs,
+            'add_form' => $addForm->createView(),
+            'edit_form' => $editForm->createView(),
+        ]);
     }
 
-    // Ajouter un formulaire d'édition vide
-    $editForm = $this->createForm(MoniteurType::class);
+    #[Route('/moniteur/edit/{id}', name: 'edit_moniteur', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_PROPRIETAIRE')]
+    public function ModifierMoniteur(
+        Request $request,
+        Moniteur $moniteur,
+        EntityManagerInterface $entityManager
+    ): Response {
+        if (!$moniteur) {
+            throw $this->createNotFoundException('Moniteur introuvable.');
+        }
 
-    return $this->render('moniteur/index.html.twig', [
-        'moniteurs' => $moniteurs,
-        'add_form' => $addForm->createView(),
-        'edit_form' => $editForm->createView(), // Passez ce formulaire à la vue
-    ]);
-}
-
-
-    #[Route('/moniteur/edit/{id}', name: 'edit_moniteur')]
-    public function edit(Request $request, Moniteur $moniteur, MoniteurRepository $moniteurRepository): Response
-    {
-        $form = $this->createForm(MoniteurType::class, $moniteur, [
-            'is_edit' => true,
-        ]);
-
+        $form = $this->createForm(MoniteurType::class, $moniteur, ['is_edit' => true]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Enregistrer la modification du statut
-            $moniteurRepository->save($moniteur, true);
+            $entityManager->flush();
 
             $this->addFlash('success', 'Moniteur modifié avec succès.');
-
-            return $this->redirectToRoute('moniteur_list');
+            return $this->redirectToRoute('moniteur_index');
         }
 
         return $this->render('moniteur/edit.html.twig', [
@@ -75,11 +81,12 @@ class MoniteurController extends AbstractController
         ]);
     }
 
-    
-
-    #[Route('/moniteur/delete/{id}', name: 'moniteur_delete')]
-    public function delete(ManagerRegistry $doctrine, int $id): Response
-    {
+    #[Route('/moniteur/delete/{id}', name: 'moniteur_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_PROPRIETAIRE')]
+    public function supprimerMoniteur(
+        ManagerRegistry $doctrine,
+        int $id
+    ): Response {
         $moniteur = $doctrine->getRepository(Moniteur::class)->find($id);
 
         if (!$moniteur) {
@@ -90,24 +97,26 @@ class MoniteurController extends AbstractController
         $entityManager->remove($moniteur);
         $entityManager->flush();
 
+        $this->addFlash('success', 'Moniteur supprimé avec succès.');
         return $this->redirectToRoute('moniteur_index');
     }
 
-    #[Route('/moniteur/{id}/changeStatut', name:'change_statut')]
-    public function changeStatut(Moniteur $moniteur, EntityManagerInterface $em): Response
-    {
-        // Change le statut en fonction de l'état actuel
-        if ($moniteur->getStatutUser() === 'Disponible') {
-            $moniteur->setStatutUser('Indisponible');
-        } else {
-            $moniteur->setStatutUser('Disponible');
+    #[Route('/moniteur/{id}/changeStatut', name: 'change_statut', methods: ['POST'])]
+    public function changeStatut(
+        Moniteur $moniteur,
+        EntityManagerInterface $entityManager
+    ): Response {
+        if (!$moniteur) {
+            throw $this->createNotFoundException('Moniteur introuvable.');
         }
 
-        // Sauvegarder les changements dans la base de données
-        $em->persist($moniteur);
-        $em->flush();
+        $newStatut = $moniteur->getStatutUser() === 'Disponible' ? 'Indisponible' : 'Disponible';
+        $moniteur->setStatutUser($newStatut);
 
-        // Redirection après la modification
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Statut du moniteur modifié avec succès.');
         return $this->redirectToRoute('moniteur_index');
     }
+
 }

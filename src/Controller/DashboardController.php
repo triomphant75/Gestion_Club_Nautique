@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class DashboardController extends AbstractController
 {
     #[Route('/dashboard', name: 'app_dashboard')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function consulterDashboard(EntityManagerInterface $entityManager): Response
     {
         // Récupérer uniquement les cours planifiés
         $coursPlanifies = $entityManager->getRepository(Cours::class)->findBy([

@@ -246,4 +246,19 @@ class Forfait
 
         return $this;
     }
+
+    public function getSeancesRestantes(): int
+    {
+        return $this->nombreSeance - $this->UtilisationForfaits->count();
+    }
+
+    public function setSeancesRestantes(int $seancesRestantes): self
+{
+    // Calculez le nouveau `nombreSeance` basé sur les séances utilisées
+    $utilisations = $this->UtilisationForfaits->count();
+    $this->nombreSeance = $seancesRestantes + $utilisations;
+
+    return $this;
+}
+
 }

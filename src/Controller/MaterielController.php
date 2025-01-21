@@ -13,11 +13,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class MaterielController extends AbstractController
 {
     #[Route('/materiel', name: 'materiel_index')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function consulterMateriel(EntityManagerInterface $entityManager): Response
     {
         $materiels = $entityManager->getRepository(Materiel::class)->findBy(['etatMateriel' => [Materiel::ETAT_DISPONIBLE, Materiel::ETAT_HORS_SERVICE, Materiel::ETAT_LOUE]]);
 
@@ -27,7 +28,8 @@ class MaterielController extends AbstractController
     }
 
     #[Route('/materiel/new', name: 'materiel_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[IsGranted('ROLE_PROPRIETAIRE')]
+    public function ajouterMateriel(Request $request, EntityManagerInterface $entityManager): Response
     {
         $materiel = new Materiel();
         $form = $this->createForm(MaterielType::class, $materiel);
@@ -46,7 +48,8 @@ class MaterielController extends AbstractController
     }
 
     #[Route('/materiel/{id}/edit', name: 'materiel_edit')]
-    public function edit(Request $request, Materiel $materiel, EntityManagerInterface $entityManager): Response
+    #[IsGranted('ROLE_PROPRIETAIRE')]
+    public function modifierMateriel(Request $request, Materiel $materiel, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(MaterielType::class, $materiel);
         $form->handleRequest($request);
@@ -63,7 +66,8 @@ class MaterielController extends AbstractController
     }
 
     #[Route('/materiel/{id}/delete', name: 'materiel_delete')]
-    public function delete(Materiel $materiel, EntityManagerInterface $entityManager): Response
+    #[IsGranted('ROLE_PROPRIETAIRE')]
+    public function supprimerMateriel(Materiel $materiel, EntityManagerInterface $entityManager): Response
     {
         // Supprimer les références au matériel dans les autres tables
         $locations = $entityManager->getRepository(Location::class)->findBy(['materiel' => $materiel]);

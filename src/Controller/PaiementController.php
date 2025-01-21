@@ -19,7 +19,7 @@ class PaiementController extends AbstractController
 {
 
     #[Route('/client/{id}/paiement/create', name: 'app_paiement_create', methods: ['GET', 'POST'])]
-public function createPaiement(int $id, Request $request, ClientRepository $clientRepository, EntityManagerInterface $entityManager): Response
+public function creerPaiement(int $id, Request $request, ClientRepository $clientRepository, EntityManagerInterface $entityManager): Response
 {
     // Récupérer le client
     $client = $clientRepository->find($id);
@@ -94,6 +94,14 @@ public function createPaiement(int $id, Request $request, ClientRepository $clie
     ]);
 }
 
+#[Route('/paiement', name: 'paiement_index', methods: ['GET'])]
+    public function consulterListePaiement(PaiementRepository $paiementRepository): Response
+    {
+        $paiements = $paiementRepository->findAll();
+        return $this->render('paiement/index.html.twig', [
+            'paiements' => $paiements,
+        ]);
+    }
 
    
     

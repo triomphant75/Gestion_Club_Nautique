@@ -6,9 +6,11 @@
     <h1>Liste des Cours</h1>
 
     <!-- Bouton pour ouvrir le modal pour ajouter un nouveau cours -->
+    {% if is_granted('ROLE_PROPRIETAIRE') or is_granted('ROLE_GESTIONNAIRE') %}
     <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createCoursModal">
         Ajouter un cours
     </button>
+    {% endif %}
 
      {% for message in app.flashes('success') %}
         <div class="alert alert-success" id="flash-message">

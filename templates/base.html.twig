@@ -60,7 +60,7 @@
             </li>
             <!-- Nav Item - Forfaits Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{{ path('forfait_index') }}">
                     <i class="fas fa-fw fa-tags"></i>
                     <span>Forfaits</span></a>
             </li>
@@ -81,7 +81,7 @@
             </li>
             <!-- Nav Item - Tables -->
             <li class="nav-item">
-                <a class="nav-link" href="tables.html">
+                <a class="nav-link" href="{{ path('paiement_index') }}">
                     <i class="fas fa-fw fa-credit-card"></i>
                     <span>Paiement</span></a>
             </li>
@@ -98,27 +98,34 @@
                     <span>Pannes</span></a>
             </li>
             <!-- Nav Item - Tables -->
+        {% if is_granted('ROLE_COMPAGNE_PROPRIETAIRE') or is_granted('ROLE_PROPRIETAIRE') or is_granted('ROLE_GESTIONNAIRE') %}
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('moniteur_index') }}">
                     <i class="fas fa-fw fa-chalkboard-teacher"></i>
                     <span>Moniteurs</span></a>
             </li>
+        {% endif %}
             <!-- Nav Item - Tables -->
+        {% if is_granted('ROLE_COMPAGNE_PROPRIETAIRE') or is_granted('ROLE_PROPRIETAIRE') or is_granted('ROLE_GESTIONNAIRE') %}
+
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('camping_list') }}">
                     <i class="fas fa-fw fa-campground"></i>
                     <span>Camping</span></a>
             </li>
+        {% endif %}
             <!-- Nav Item - Tables -->
+        {% if  is_granted('ROLE_PROPRIETAIRE') or is_granted('ROLE_GESTIONNAIRE') %}
             <li class="nav-item">
-                <a class="nav-link" href="tables.html">
+                <a class="nav-link" href="{{ path('user_list') }}">
                     <i class="fas fa-fw fa-user-tie"></i>
                     <span>Personnel/admin</span></a>
             </li>
-            
+        {% endif %}
+    
             <!-- Heading -->
             <div class="sidebar-heading">
-                    User: <span>{{ app.user.prenomUser }}</span>
+                <span>{{ app.user.roles | join(', ') }}</span>
             </div>
                <!-- Heading -->
             <div class="sidebar-heading">

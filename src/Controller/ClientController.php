@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Entity\Paiement;
 use App\Entity\TypeNiveauClient;
 
@@ -26,7 +27,7 @@ class ClientController extends AbstractController
     }
 
     #[Route('/client', name: 'app_client_index')]
-    public function index(CampingRepository $campingRepository): Response
+    public function ConsulterClient(CampingRepository $campingRepository): Response
     {
         $campings = $campingRepository->findAll();
         $clients = $this->clientRepository->findAll();
@@ -38,7 +39,7 @@ class ClientController extends AbstractController
     }
 
     #[Route('/client/new', name: 'app_client_new', methods: ['POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, CampingRepository $campingRepository): Response
+    public function creerClient(Request $request, EntityManagerInterface $entityManager, CampingRepository $campingRepository): Response
     {
         // Récupérer l'ID du camping sélectionné
         $campingId = $request->request->get('campingId');
@@ -80,7 +81,7 @@ class ClientController extends AbstractController
     }
 
     #[Route('/client/{id}/edit', name: 'app_client_edit', methods: ['GET','POST'])]
-public function edit(Request $request, Client $client, CampingRepository $campingRepository): Response
+public function modifierClient(Request $request, Client $client, CampingRepository $campingRepository): Response
 {
 
     if ($request->isMethod('POST')) {
@@ -118,8 +119,10 @@ public function edit(Request $request, Client $client, CampingRepository $campin
 
 
     #[Route('/client/{id}', name: 'app_client_delete', methods: ['POST'])]
-public function delete(Client $client): Response
+    #[IsGranted('ROLE_PROPRIETAIRE')]
+public function supprimerClient(Client $client): Response
 {
+    $this->denyAccessUnlessGranted('vous n\'avez pas le droit de  d\'accéder à cette ressource');
     $this->entityManager->remove($client);
     $this->entityManager->flush();
      // Message de succès et redirection
@@ -130,7 +133,7 @@ public function delete(Client $client): Response
 
 
     #[Route('/client/{id}/profile', name: 'client_profile', methods: ['GET','POST'])]
-    public function profile(Client $client): Response
+    public function consulterprofile(Client $client): Response
     {
           
 

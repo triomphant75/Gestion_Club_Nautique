@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Cours;
@@ -15,6 +16,7 @@ use App\Form\AddClientToCoursType;
 use App\Entity\Participation;
 use Psr\Log\LoggerInterface;
 use App\Form\UpdateParticipantStatusType;
+use App\Entity\UtilisationForfait;
 
 class CoursController extends AbstractController
 {
@@ -26,7 +28,7 @@ class CoursController extends AbstractController
     }
 
     #[Route('/cours', name: 'cours_index')]
-    public function index(EntityManagerInterface $em, Request $request): Response
+    public function planifierCours(EntityManagerInterface $em, Request $request): Response
     {
         // Récupérer tous les cours
         $cours = $em->getRepository(Cours::class)->findAll();
@@ -102,7 +104,7 @@ class CoursController extends AbstractController
     }
 
     #[Route('/cours/{id}', name: 'cours_show')]
-    public function show(Cours $cours): Response
+    public function consulterCours(Cours $cours): Response
     {
         return $this->render('cours/show.html.twig', [
             'cours' => $cours,
@@ -110,7 +112,7 @@ class CoursController extends AbstractController
     }
 
     #[Route('/cours/{id}/participants', name: 'cours_participants')]
-    public function participants(Cours $cours, EntityManagerInterface $em): Response
+    public function Consulterparticipants(Cours $cours, EntityManagerInterface $em): Response
     {
         // Récupérer les participations associées au cours
         $participants = $em->getRepository(Participation::class)->findBy(['cours' => $cours]);
@@ -126,12 +128,12 @@ class CoursController extends AbstractController
     }
 
     #[Route('/cours/{id}/add-clients', name: 'cours_add_clients')]
-    public function addClientsToCours(
+    public function inscrireClientCours(
         Cours $cours,
         Request $request,
         EntityManagerInterface $em
     ): Response {
-        // Créez le formulaire
+        // Créer le formulaire
         $form = $this->createForm(AddClientToCoursType::class, null, [
             'cours' => $cours,
         ]);
@@ -143,9 +145,8 @@ class CoursController extends AbstractController
             $dateInscription = $form->get('dateInscriptionCours')->getData();
             $statut = $form->get('statutParticipant')->getData();
 
-
-            try{
-                // Vérifiez si $clients est un tableau ou un seul objet
+            try {
+                // Vérifier si $clients est un tableau ou un seul objet
                 if (is_array($clients) || $clients instanceof \Traversable) {
                     foreach ($clients as $client) {
                         // Vérifier si le client est déjà inscrit à ce cours
@@ -161,9 +162,36 @@ class CoursController extends AbstractController
                             $participation->setClient($client);
                             $participation->setDateInscriptionCours($dateInscription);
                             $participation->setStatutParticipant($statut);
-                            // Vérifiez l'objet Participation avant de persister
+                            // Vérifier l'objet Participation avant de persister
 
                             $em->persist($participation);
+
+                            // Mettre à jour l'utilisation du forfait
+                            $forfait = $client->getForfait();
+                            if ($forfait) {
+                                $seancesRestantes = $forfait->getSeancesRestantes();
+                                if ($seancesRestantes > 0) {
+                                    $forfait->setSeancesRestantes($seancesRestantes - 1);
+
+                                    if ($seancesRestantes - 1 == 0) {
+                                        $forfait->setStatutForfait('Terminé');
+                                    } elseif ($seancesRestantes - 1 > 0) {
+                                        $forfait->setStatutForfait('En cours');
+                                    }
+
+                                    $utilisationForfait = new UtilisationForfait();
+                                    $utilisationForfait->setDateUtilisation(new \DateTimeImmutable());
+                                    $utilisationForfait->setStatutForfait($forfait->getStatutForfait());
+                                    $utilisationForfait->setForfait($forfait);
+                                    $utilisationForfait->setParticipation($participation);
+
+                                    $em->persist($utilisationForfait);
+                                } else {
+                                    $this->addFlash('warning', 'Aucune séance restante pour ce forfait.');
+                                }
+                            } else {
+                                $this->addFlash('error', 'Forfait introuvable pour ce client.');
+                            }
                         } else {
                             $this->addFlash('warning', 'Client déjà inscrit à ce cours.');
                         }
@@ -182,9 +210,29 @@ class CoursController extends AbstractController
                         $participation->setClient($clients);
                         $participation->setDateInscriptionCours($dateInscription);
                         $participation->setStatutParticipant($statut);
-                        // Vérifiez l'objet Participation avant de persister
+                        // Vérifier l'objet Participation avant de persister
 
                         $em->persist($participation);
+
+                        // Mettre à jour l'utilisation du forfait
+                        $forfait = $clients->getForfaits()->first();
+                        if ($forfait->getSeancesRestantes() > 0) {
+                            $utilisationForfait = new UtilisationForfait();
+                            $utilisationForfait->setDateUtilisation(new \DateTimeImmutable());
+                            $utilisationForfait->setStatutForfait(
+                                $forfait->getSeancesRestantes() - 1 > 0 ? 'En cours' : 'Terminé'
+                            );
+                            $utilisationForfait->setForfait($forfait);
+                            $utilisationForfait->setParticipation($participation);
+                        
+                            $em->persist($utilisationForfait);
+                            $em->flush();
+                        
+                            $this->addFlash('success', 'Forfait utilisé avec succès.');
+                        } else {
+                            $this->addFlash('warning', 'Aucune séance restante pour ce forfait.');
+                        }
+                        
                     } else {
                         $this->addFlash('warning', 'Client déjà inscrit à ce cours.');
                     }
@@ -193,8 +241,8 @@ class CoursController extends AbstractController
                 $em->flush();
                 $this->addFlash('success', 'Clients ajoutés au cours avec succès.');
 
-            }catch (\Doctrine\DBAL\Exception $e) {
-                 // Récupérer le message du RAISE EXCEPTION
+            } catch (\Doctrine\DBAL\Exception $e) {
+                // Récupérer le message de l'exception
                 $errorMessage = $e->getPrevious()->getMessage();
 
                 // Extraire uniquement le message personnalisé du trigger
@@ -204,14 +252,14 @@ class CoursController extends AbstractController
                     $cleanMessage = 'Une erreur est survenue.';
                 }
 
-        // Ajouter le message filtré comme un flash
-        $this->addFlash('error', $cleanMessage);
+                // Ajouter le message filtré comme un flash
+                $this->addFlash('error', $cleanMessage);
             }
             // Message de succès et redirection
             return $this->redirectToRoute('cours_participants', ['id' => $cours->getId()]);
         }
 
-        // Retourne toujours une réponse, même si le formulaire n'est pas soumis ou n'est pas valide
+        // Retourner toujours une réponse, même si le formulaire n'est pas soumis ou n'est pas valide
         return $this->render('cours/add_clients.html.twig', [
             'cours' => $cours,
             'form' => $form->createView(),
@@ -219,7 +267,7 @@ class CoursController extends AbstractController
     }
 
     #[Route('/cours/{id}/participant/{participantId}/update-status', name: 'cours_participant_update_status', methods: ['POST'])]
-public function updateParticipantStatusSimple(
+public function miseajourStatutClient(
     int $participantId,
     Request $request,
     EntityManagerInterface $em
