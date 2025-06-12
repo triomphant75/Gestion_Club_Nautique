@@ -92,7 +92,7 @@ Supervision :
 
 ```bash
 # 1. Cloner le dépôt
-git clone https://github.com/votre-organisation/club-nautique-si.git
+git clone https://github.com/triomphant75/Gestion_Club_Nautique.git
 cd club-nautique-si
 
 # 2. Installer les dépendances PHP
